@@ -32,6 +32,11 @@ class Category extends SystemModel
         return 'category_name';
     }
 
+    public function fieldSearching()
+    {
+        return self::field_name();
+    }
+
     public function getFieldNameAttribute()
     {
         return $this->{$this->field_name()};

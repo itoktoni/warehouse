@@ -20,16 +20,18 @@ class RolesController extends MasterController
         self::$is_core = true;
     }
 
-    protected function beforeForm()
+    protected function share($data = [])
     {
-
         $group = GroupModel::getOptions();
         $level = LevelType::getOptions();
 
-        self::$share = [
+        $view = [
             'group' => $group,
             'level' => $level,
+            'model' => $this->model
         ];
+
+        return self::$share = array_merge($view, self::$share, $data);
     }
 
     public function postCreate(RoleRequest $request, CreateService $service)
@@ -41,6 +43,7 @@ class RolesController extends MasterController
 
     public function postUpdate($code, RoleRequest $request, UpdateRoleService $service)
     {
+        dd($request);
         $data = $service->update($this->model, $request, $code);
 
         return Response::redirectBack($data);
@@ -48,9 +51,6 @@ class RolesController extends MasterController
 
     public function getUpdate($code)
     {
-        $this->beforeForm();
-        $this->beforeUpdate($code);
-
         $data = $this->get($code, ['has_group']);
         $selected = $data->has_group->pluck('system_group_code') ?? [];
 

@@ -22,15 +22,10 @@
                                         <input class="btn-check-d" type="checkbox">
                                     </th>
                                     <th class="text-center column-action">{{ __('Action') }}</th>
-                                    @foreach ($fields as $value)
-                                        <th {{ Template::extractColumn($value) }}>
-                                            @if ($value->sort)
-                                                lang($value->code, __($value->name))
-                                            @else
-                                                {{ __($value->name) }}
-                                            @endif
-                                        </th>
-                                    @endforeach
+                                    <th>ID</th>
+                                    <th>Nama Departemen</th>
+                                    <th>PIC</th>
+                                    <th>Phone</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,11 +38,11 @@
                                         <td class="col-md-2 text-center column-action">
                                             <x-crud :model="$table" />
                                         </td>
-                                        
-										<td >{{ $table->departemen_id }}</td>
-										<td >{{ $table->departemen_nama }}</td>
-										<td >{{ $table->departemen_pic }}</td>
-										<td >{{ $table->departemen_telp }}</td>
+
+										<td data-label="ID">{{ $table->departemen_id }}</td>
+										<td data-label="Nama">{{ $table->departemen_nama }}</td>
+										<td data-label="PIC">{{ $table->departemen_pic }}</td>
+										<td data-label="Telp">{{ $table->departemen_telp }}</td>
 
                                     </tr>
                                 @empty

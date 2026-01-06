@@ -33,7 +33,7 @@ class Category extends Model
 
     public static function field_name()
     {
-        return 'category_name';
+        return 'category_nama';
     }
 
     public function getFieldNameAttribute()

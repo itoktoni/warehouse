@@ -30,5 +30,18 @@ class Departemen extends SystemModel
      */
     protected $fillable = ['departemen_id', 'departemen_nama', 'departemen_pic', 'departemen_telp'];
 
+    public static function field_name()
+    {
+        return 'departemen_nama';
+    }
 
+    public function fieldSearching()
+    {
+        return self::field_name();
+    }
+
+    public function getFieldNameAttribute()
+    {
+        return $this->{$this->field_name()};
+    }
 }

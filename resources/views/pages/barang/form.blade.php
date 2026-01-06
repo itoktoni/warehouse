@@ -5,10 +5,9 @@
 
             <div class="row">
                 @bind($model)
-                    
-                <x-form-input col="6" name="barang_code" />
+
+                <x-form-select col="6" name="barang_id_category" :options="$category"/>
                 <x-form-input col="6" name="barang_nama" />
-                <x-form-input col="6" name="barang_id_category" />
 
                 @endbind
             </div>

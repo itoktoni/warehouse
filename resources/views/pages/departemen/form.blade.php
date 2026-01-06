@@ -5,11 +5,10 @@
 
             <div class="row">
                 @bind($model)
-                    
-                <x-form-input col="6" name="departemen_id" />
+
                 <x-form-input col="6" name="departemen_nama" />
-                <x-form-input col="6" name="departemen_pic" />
-                <x-form-input col="6" name="departemen_telp" />
+                <x-form-input col="3" name="departemen_pic" />
+                <x-form-input col="3" name="departemen_telp" />
 
                 @endbind
             </div>

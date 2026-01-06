@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Core;
 
+use App\Dao\Models\Core\User;
 use App\Facades\Model\RoleModel;
 use App\Facades\Model\UserModel;
 use App\Http\Requests\Core\LoginRequest;
@@ -10,39 +11,50 @@ use App\Services\Master\CreateService;
 use App\Services\Master\SingleService;
 use App\Services\Master\UpdateService;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Plugins\Notes;
 use Plugins\Response;
 
 class UserController extends MasterController
 {
-    public function __construct(UserModel $model, SingleService $service)
+    public function __construct(User $model, SingleService $service)
     {
         $this->model = $model::getModel();
         self::$service = self::$service ?? $service;
         self::$is_core = true;
     }
 
-    protected function beforeForm()
+    protected function share($data = [])
     {
         $roles = RoleModel::getOptions();
+        $selected = [];
 
-        self::$share = [
+        $view = [
             'roles' => $roles,
+            'selected' => $selected,
+            'model' => $this->model
         ];
+
+        return self::$share = array_merge($view, self::$share, $data);
     }
 
     public function postCreate(UserRequest $request, CreateService $service)
     {
         $data = $service->save($this->model, $request);
-
         return Response::redirectBack($data);
+    }
+
+    public function getUpdate($code)
+    {
+        $model = $this->get($code);
+
+        return $this->views($this->template(core : self::$is_core), $this->share([
+            'model' => $this->get($code),
+        ]));
     }
 
     public function postUpdate($code, UserRequest $request, UpdateService $service)
     {
         $data = $service->update($this->model, $request, $code);
-
         return Response::redirectBack($data);
     }
 
@@ -95,8 +107,6 @@ class UserController extends MasterController
 
     public function getProfile()
     {
-        $this->beforeForm();
-
         if(request()->header('authorization'))
         {
             return auth()->user();
