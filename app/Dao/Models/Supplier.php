@@ -29,7 +29,20 @@ class Supplier extends SystemModel
      *
      * @var array<int, string>
      */
-    protected $fillable = ['supplier_id', 'supplier_nama', 'supplier_telp', 'supplier_email', 'supplier_alamat'];
+    protected $fillable = ['supplier_id', 'supplier_nama', 'supplier_pic', 'supplier_telp', 'supplier_email', 'supplier_alamat'];
 
+    public static function field_name()
+    {
+        return 'supplier_nama';
+    }
 
+    public function fieldSearching()
+    {
+        return self::field_name();
+    }
+
+    public function getFieldNameAttribute()
+    {
+        return $this->{$this->field_name()};
+    }
 }

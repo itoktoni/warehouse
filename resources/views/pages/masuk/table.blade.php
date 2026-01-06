@@ -22,15 +22,11 @@
                                         <input class="btn-check-d" type="checkbox">
                                     </th>
                                     <th class="text-center column-action">{{ __('Action') }}</th>
-                                    @foreach ($fields as $value)
-                                        <th {{ Template::extractColumn($value) }}>
-                                            @if ($value->sort)
-                                                lang($value->code, __($value->name))
-                                            @else
-                                                {{ __($value->name) }}
-                                            @endif
-                                        </th>
-                                    @endforeach
+                                    <th>Code</th>
+                                    <th>Tanggal Masuk</th>
+                                    <th>Supplier</th>
+                                    <th>No. PO</th>
+                                    <th>No. Pengiriman</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,18 +39,12 @@
                                         <td class="col-md-2 text-center column-action">
                                             <x-crud :model="$table" />
                                         </td>
-                                        
+
 										<td >{{ $table->masuk_code }}</td>
+										<td >{{ formatDate($table->masuk_tanggal) }}</td>
+										<td >{{ $table->supplier_nama }}</td>
 										<td >{{ $table->masuk_no_po }}</td>
-										<td >{{ $table->masuk_tanggal_pengiriman }}</td>
 										<td >{{ $table->masuk_no_pengiriman }}</td>
-										<td >{{ $table->masuk_id_supplier }}</td>
-										<td >{{ $table->masuk_tanggal }}</td>
-										<td >{{ $table->masuk_catatan }}</td>
-										<td >{{ $table->masuk_created_at }}</td>
-										<td >{{ $table->masuk_updated_at }}</td>
-										<td >{{ $table->masuk_created_by }}</td>
-										<td >{{ $table->masuk_updated_by }}</td>
 
                                     </tr>
                                 @empty

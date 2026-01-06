@@ -5,18 +5,16 @@
 
             <div class="row">
                 @bind($model)
-                    
-                <x-form-input col="6" name="masuk_code" />
-                <x-form-input col="6" name="masuk_no_po" />
-                <x-form-input col="6" name="masuk_tanggal_pengiriman" />
-                <x-form-input col="6" name="masuk_no_pengiriman" />
-                <x-form-input col="6" name="masuk_id_supplier" />
-                <x-form-input col="6" name="masuk_tanggal" />
-                <x-form-input col="6" name="masuk_catatan" />
-                <x-form-input col="6" name="masuk_created_at" />
-                <x-form-input col="6" name="masuk_updated_at" />
-                <x-form-input col="6" name="masuk_created_by" />
-                <x-form-input col="6" name="masuk_updated_by" />
+
+                <x-form-input col="3" name="masuk_code" label="Generated Code" readonly/>
+                <x-form-input col="3" type="date" name="masuk_tanggal" value="{{ $model->masuk_tanggal ?? date('Y-m-d') }}" />
+
+                <x-form-select col="3" name="masuk_id_supplier" :options="$supplier"/>
+                <x-form-input col="3" name="masuk_no_po" label="Nomer PO"/>
+                <x-form-input col="3" type="date" name="masuk_tanggal_pengiriman" label="Tanggal Pengiriman"/>
+                <x-form-input col="3" name="masuk_no_pengiriman" label="Nomer Pengiriman"/>
+
+                <x-form-textarea col="6" name="masuk_catatan" />
 
                 @endbind
             </div>

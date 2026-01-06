@@ -22,15 +22,11 @@
                                         <input class="btn-check-d" type="checkbox">
                                     </th>
                                     <th class="text-center column-action">{{ __('Action') }}</th>
-                                    @foreach ($fields as $value)
-                                        <th {{ Template::extractColumn($value) }}>
-                                            @if ($value->sort)
-                                                lang($value->code, __($value->name))
-                                            @else
-                                                {{ __($value->name) }}
-                                            @endif
-                                        </th>
-                                    @endforeach
+                                    <th style="width: 60px">ID</th>
+                                    <th>Nama Supplier</th>
+                                    <th>PIC</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,9 +42,9 @@
 
 										<td >{{ $table->supplier_id }}</td>
 										<td >{{ $table->supplier_nama }}</td>
+										<td >{{ $table->supplier_pic }}</td>
 										<td >{{ $table->supplier_telp }}</td>
 										<td >{{ $table->supplier_email }}</td>
-										<td >{{ $table->supplier_alamat }}</td>
 
                                     </tr>
                                 @empty

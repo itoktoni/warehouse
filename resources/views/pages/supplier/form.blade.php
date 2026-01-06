@@ -6,11 +6,11 @@
             <div class="row">
                 @bind($model)
 
-                <x-form-input col="6" name="supplier_id" />
-                <x-form-input col="6" name="supplier_nama" />
-                <x-form-input col="6" name="supplier_telp" />
-                <x-form-input col="6" name="supplier_email" />
-                <x-form-input col="6" name="supplier_alamat" />
+                <x-form-input col="6" name="supplier_nama" label="Nama Supplier" />
+                <x-form-input col="6" name="supplier_pic" label="PIC"/>
+                <x-form-input col="3" name="supplier_telp" />
+                <x-form-input col="3" name="supplier_email" />
+                <x-form-textarea col="6" name="supplier_alamat" />
 
                 @endbind
             </div>
