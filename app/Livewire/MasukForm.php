@@ -170,6 +170,11 @@ class MasukForm extends Component
                     'masuk_detail_code_barang' => $item['barang_code'],
                     'masuk_detail_qty' => $item['qty']
                 ]);
+
+                $barang = Barang::where('barang_code', $item['barang_code'])->first();
+                $qty_barang = $barang->barang_qty;
+                $barang->qty = $qty_barang + $item['qty'];
+                $barang->update();
             }
 
             DB::commit();
