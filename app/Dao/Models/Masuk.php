@@ -57,6 +57,11 @@ class Masuk extends SystemModel
         return $this->hasOne(Supplier::getModel(), Supplier::field_primary(), 'masuk_id_supplier');
     }
 
+    public function has_details()
+    {
+        return $this->hasMany(MasukDetail::class, 'masuk_detail_code_masuk', 'masuk_code');
+    }
+
     public static function field_name()
     {
         return 'masuk_tanggal';

@@ -23,4 +23,14 @@ class MasukDetail extends SystemModel
         'masuk_detail_code_masuk',
         'masuk_detail_qty',
     ];
+
+    public function has_masuk()
+    {
+        return $this->belongsTo(Masuk::class, 'masuk_detail_code_masuk', 'masuk_code');
+    }
+
+    public function has_barang()
+    {
+        return $this->belongsTo(Barang::class, 'masuk_detail_code_barang', 'barang_code');
+    }
 }
