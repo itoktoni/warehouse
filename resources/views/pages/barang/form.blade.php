@@ -13,7 +13,7 @@
 
                     <h6 class="text-center">{{ $model->field_primary }}</h6>
 
-                    @if ($model)
+                    @if ($model->field_primary)
                         {!! QrCode::size(200)->generate($model->field_primary) !!}
                     @endif
 
