@@ -33,7 +33,12 @@ class Category extends Model
 
     public static function field_name()
     {
-        return 'category_nama';
+        return 'category_name';
+    }
+
+    public function fieldSearching()
+    {
+        return self::field_name();
     }
 
     public function getFieldNameAttribute()
