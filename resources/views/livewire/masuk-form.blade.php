@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-header">
             <div class="card-title">
-                @if($model)
+                @if(request()->segment(5) == 'update')
                     Update Transaksi Masuk
                 @else
                     Buat Transaksi Masuk

@@ -28,7 +28,7 @@ class MasukForm extends Component
     {
         $this->model = $model;
 
-        if ($model) {
+        if ($model && request()->segment(5) == 'update') {
             $this->masuk_code = $model->masuk_code;
             $this->masuk_tanggal = $model->masuk_tanggal ?? date('Y-m-d');
             $this->masuk_id_supplier = $model->masuk_id_supplier;
@@ -119,7 +119,7 @@ class MasukForm extends Component
 
     public function save()
     {
-        $this->validate([
+        $check = $this->validate([
             'masuk_tanggal' => 'required|date',
             'masuk_id_supplier' => 'required',
         ]);

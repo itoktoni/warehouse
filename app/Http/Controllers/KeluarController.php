@@ -13,7 +13,7 @@ use App\Facades\Model\MasukModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class MasukController extends MasterController
+class KeluarController extends MasterController
 {
     use CreateFunction, UpdateFunction;
 
