@@ -36,8 +36,16 @@ class Masuk extends SystemModel
     public $timestamps = true;
 
     protected $dates = [
+        'masuk_tanggal',
         self::CREATED_AT,
         self::UPDATED_AT,
+    ];
+
+    protected $filters = [
+        'filter',
+        'masuk_id_supplier',
+        'start_date',
+        'end_date',
     ];
 
     const CREATED_AT = 'masuk_created_at';
@@ -70,6 +78,27 @@ class Masuk extends SystemModel
     public function fieldSearching()
     {
         return self::field_name();
+    }
+
+    public function start_date($query)
+    {
+        $date = request()->get('start_date');
+        if ($date) {
+            $query = $query->whereDate('masuk_tanggal', '>=', $date);
+        }
+
+        return $query;
+    }
+
+    public function end_date($query)
+    {
+        $date = request()->get('end_date');
+
+        if ($date) {
+            $query = $query->whereDate('masuk_tanggal', '<=', $date);
+        }
+
+        return $query;
     }
 
     public function getFieldNameAttribute()

@@ -22,9 +22,9 @@
                                         <input class="btn-check-d" type="checkbox">
                                     </th>
                                     <th class="text-center column-action">{{ __('Action') }}</th>
-                                       <th>Code</th>
-                                       <th>Nama</th>
-                                       <th>Qty</th>
+                                    <th style="width: 100px;text-align: center;">Barcode</th>
+                                    <th>Code</th>
+                                    <th>Nama</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,9 +38,9 @@
                                             <x-crud :model="$table" />
                                         </td>
 
+										<td class="text-center"> {!! QrCode::size(50)->generate($table->field_primary) !!}</td>
 										<td >{{ $table->barang_code }}</td>
 										<td >{{ $table->barang_nama }}</td>
-										<td >{{ $table->barang_id_category }}</td>
 
                                     </tr>
                                 @empty

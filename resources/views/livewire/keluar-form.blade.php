@@ -3,9 +3,9 @@
         <div class="card-header">
             <div class="card-title">
                 @if(request()->segment(5) == 'update')
-                    Update Transaksi Masuk
+                    Update Transaksi Keluar
                 @else
-                    Buat Transaksi Masuk
+                    Buat Transaksi Keluar
                 @endif
             </div>
         </div>
@@ -16,76 +16,52 @@
                 @if($form)
 
                 <div class="col-md-3 mb-3">
-                    <label for="masuk_code" class="form-label">Generated Code</label>
+                    <label for="keluar_code" class="form-label">Generated Code</label>
                     <input type="text"
                            class="form-control"
-                           id="masuk_code"
-                           wire:model="masuk_code"
+                           id="keluar_code"
+                           wire:model="keluar_code"
                            readonly>
                 </div>
 
                 @endif
 
                 <div class="col-md-3 mb-3">
-                    <label for="masuk_tanggal" class="form-label">Tanggal</label>
+                    <label for="keluar_tanggal" class="form-label">Tanggal</label>
                     <input type="date"
                            class="form-control"
-                           id="masuk_tanggal"
-                           wire:model="masuk_tanggal">
-                    @error('masuk_tanggal')
+                           id="keluar_tanggal"
+                           wire:model="keluar_tanggal">
+                    @error('keluar_tanggal')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label for="masuk_id_supplier" class="form-label">Supplier</label>
+                    <label for="keluar_id_departemen" class="form-label">Departemen</label>
                     <select class="form-control"
-                            id="masuk_id_supplier"
-                            wire:model="masuk_id_supplier">
-                        <option value="">Select Supplier</option>
-                        @foreach($supplier as $key => $value)
+                            id="keluar_id_departemen"
+                            wire:model="keluar_id_departemen">
+                        <option value="">Select Departemen</option>
+                        @foreach($departemen as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
                     </select>
-                    @error('masuk_id_supplier')
+                    @error('keluar_id_departemen')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-3 mb-3">
-                    <label for="masuk_no_po" class="form-label">Nomer PO</label>
-                    <input type="text"
-                           class="form-control"
-                           id="masuk_no_po"
-                           wire:model="masuk_no_po">
-                </div>
-
-                <div class="col-md-3 mb-3">
-                    <label for="masuk_tanggal_pengiriman" class="form-label">Tanggal Pengiriman</label>
-                    <input type="date"
-                           class="form-control"
-                           id="masuk_tanggal_pengiriman"
-                           wire:model="masuk_tanggal_pengiriman">
-                </div>
-
-                <div class="col-md-3 mb-3">
-                    <label for="masuk_no_pengiriman" class="form-label">Nomer Pengiriman</label>
-                    <input type="text"
-                           class="form-control"
-                           id="masuk_no_pengiriman"
-                           wire:model="masuk_no_pengiriman">
-                </div>
-
                 <div class="col-md-6 mb-3">
-                    <label for="masuk_catatan" class="form-label">Catatan</label>
+                    <label for="keluar_catatan" class="form-label">Catatan</label>
                     <textarea class="form-control"
-                              id="masuk_catatan"
-                              wire:model="masuk_catatan"
+                              id="keluar_catatan"
+                              wire:model="keluar_catatan"
                               rows="3"></textarea>
                 </div>
             </div>
 
-            @if(empty($masuk_code))
+            @if(empty($keluar_code))
             <!-- Barcode Scanner Input -->
             <div class="row mt-3">
                 <div class="col-md-6">

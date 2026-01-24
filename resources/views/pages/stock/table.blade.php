@@ -10,10 +10,8 @@
                  <div class="container-fluid filter-container mb-2">
                     <div class="row">
 
-                        <x-form-input type="date" col="3" label="Start Date" name="start_date" />
-                        <x-form-input type="date" col="3" label="End Date" name="end_date" />
-                        <x-form-select col="6" name="masuk_id_supplier" label="Supplier" :options="$supplier" />
-
+                        <x-form-input col="6" label="Kode Barang" name="barang_code" />
+                        <x-form-select col="6" name="barang_code" label="Nama Barang" :options="$barang" />
                     </div>
                 </div>
 
@@ -33,11 +31,9 @@
                                         <input class="btn-check-d" type="checkbox">
                                     </th>
                                     <th class="text-center column-action">{{ __('Action') }}</th>
-                                    <th>Code</th>
-                                    <th>Tanggal Masuk</th>
-                                    <th>Supplier</th>
-                                    <th>No. PO</th>
-                                    <th>No. Pengiriman</th>
+                                       <th>Code</th>
+                                       <th>Nama</th>
+                                       <th>Qty</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,16 +44,12 @@
                                                 value="{{ $table->field_primary }}">
                                         </td>
                                         <td class="col-md-2 text-center column-action">
-                                            <x-crud :model="$table">
-                                                 <x-button module="getPrint" label="Print" key="{{ $table->field_primary }}" color="success"/>
-                                            </x-crud>
+                                            <x-crud :model="$table" />
                                         </td>
 
-										<td >{{ $table->masuk_code }}</td>
-										<td >{{ formatDate($table->masuk_tanggal) }}</td>
-										<td >{{ $table->supplier_nama }}</td>
-										<td >{{ $table->masuk_no_po }}</td>
-										<td >{{ $table->masuk_no_pengiriman }}</td>
+										<td >{{ $table->barang_code }}</td>
+										<td >{{ $table->barang_nama }}</td>
+										<td >{{ $table->barang_qty }}</td>
 
                                     </tr>
                                 @empty

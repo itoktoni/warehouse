@@ -25,6 +25,12 @@ class Barang extends SystemModel
     public $incrementing = false;
     protected $keyType = 'string';
 
+    protected $filters = [
+        'filter',
+        'barang_code',
+        'barang_nama',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *

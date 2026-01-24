@@ -19,4 +19,17 @@ class StockController extends BarangController
         self::$service = self::$service ?? $service;
         $this->model = $model::getModel();
     }
+
+
+    protected function share($data = [])
+    {
+        $barang = Barang::getOptions();
+
+        $view = [
+            'barang' => $barang,
+            'model' => $this->model,
+        ];
+
+        return self::$share = array_merge($view, self::$share, $data);
+    }
 }

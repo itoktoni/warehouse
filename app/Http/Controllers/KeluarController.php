@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Dao\Models\Masuk;
-use App\Dao\Models\Supplier;
-use App\Dao\Models\MasukDetail;
-use App\Http\Controllers\Core\MasterController;
+use App\Dao\Models\Departemen;
+use App\Dao\Models\Keluar;
+use App\Dao\Models\KeluarDetail;
 use App\Http\Function\CreateFunction;
 use App\Http\Function\UpdateFunction;
 use App\Services\Master\SingleService;
-use App\Facades\Model\MasukModel;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Core\MasterController;
+use Plugins\Response;
 
 class KeluarController extends MasterController
 {
     use CreateFunction, UpdateFunction;
 
-    public function __construct(MasukModel $model, SingleService $service)
+    public function __construct(Keluar $model, SingleService $service)
     {
         self::$service = self::$service ?? $service;
         $this->model = $model::getModel();
@@ -25,7 +23,9 @@ class KeluarController extends MasterController
 
      public function getData()
     {
-        $query = $this->model->select(Masuk::getTableName().'.*', Supplier::field_name())->leftJoinRelationship('has_supplier');
+        $query = $this->model->select(Keluar::getTableName().'.*', Departemen::field_name())
+            ->leftJoinRelationship('has_departemen')
+            ->filter();
 
         $page = env('PAGINATION_NUMBER', 10);
         if(request()->get('page'))
@@ -41,86 +41,62 @@ class KeluarController extends MasterController
 
     protected function share($data = [])
     {
-        $supplier = Supplier::getOptions();
+        $departemen = Departemen::getOptions();
 
         $view = [
-            'supplier' => $supplier,
+            'departemen' => $departemen,
             'model' => $this->model,
         ];
 
         return self::$share = array_merge($view, self::$share, $data);
     }
 
-    public function postCreate(Request $request)
+    public function getDelete()
     {
-        // Check if request is coming from Livewire (has scanned_items)
-        if ($request->has('scanned_items')) {
-            return $this->handleMasukWithScannedItems($request, null);
-        }
+        $code = request()->get('code');
+        $data = self::$service->delete($this->model, $code);
 
-        // Use the default CreateFunction for regular form submissions
-        return (new class { use CreateFunction; })->postCreate($request, app(\App\Services\Master\CreateService::class));
+        KeluarDetail::where('keluar_detail_code_keluar', $code)->delete();
+
+        return Response::redirectBack($data);
     }
 
-    public function postUpdate($code, Request $request)
+    public function postTable()
     {
-        // Check if request is coming from Livewire (has scanned_items)
-        if ($request->has('scanned_items')) {
-            return $this->handleMasukWithScannedItems($request, $code);
+        if (request()->exists('delete'))
+        {
+            $data = $this->deleteData(request()->get('code'));
         }
 
-        // Use the default UpdateFunction for regular form submissions
-        return (new class { use UpdateFunction; })->postUpdate($code, $request, app(\App\Services\Master\UpdateService::class));
+        if (request()->exists('sort')) {
+            $sort = array_unique(request()->get('sort'));
+            $data = self::$service->sort($this->model, $sort);
+        }
+
+        return Response::redirectBack($data);
     }
 
-    private function handleMasukWithScannedItems($request, $code = null)
+    public function deleteData($code)
     {
-        DB::beginTransaction();
+        $code = array_unique(request()->get('code'));
+        $data = self::$service->delete($this->model, $code);
 
-        try {
-            // Remove scanned_items from request data to prevent it from being saved to masuk table
-            $scannedItems = json_decode($request->get('scanned_items', '[]'), true);
-            $requestData = $request->except(['scanned_items']);
+        KeluarDetail::whereIn('keluar_detail_code_keluar', $code)->delete();
 
-            if ($code) {
-                // Update existing record
-                $masuk = $this->model->findOrFail($code);
-                $masuk->update($requestData);
-            } else {
-                // Create new record
-                $masuk = $this->model->create($requestData);
-            }
+        return $data;
+    }
 
-            // Delete existing masuk detail records if updating
-            if ($code) {
-                MasukDetail::where('masuk_detail_code_masuk', $masuk->masuk_code)->delete();
-            }
+    public function getPrint($code)
+    {
+        $detail = KeluarDetail::with(['has_barang'])->where('keluar_detail_code_keluar', $code)->get();
+        $model = $this->model->with(['has_departemen'])->where($this->model->getKeyName(), $code)->firstOrFail();
+        $departemen = $model->has_departemen;
 
-            // Create masuk detail records if any scanned items exist
-            if (!empty($scannedItems)) {
-                foreach ($scannedItems as $item) {
-                    MasukDetail::create([
-                        'masuk_detail_code_masuk' => $masuk->masuk_code,
-                        'masuk_detail_code_barang' => $item['barang_code'],
-                        'masuk_detail_qty' => $item['qty']
-                    ]);
-                }
-            }
-
-            DB::commit();
-
-            // Return success response
-            if ($code) {
-                session()->flash('success', 'Data updated successfully');
-            } else {
-                session()->flash('success', 'Data created successfully');
-            }
-
-            return redirect()->back();
-        } catch (\Exception $e) {
-            DB::rollback();
-            session()->flash('error', 'Error: ' . $e->getMessage());
-            return redirect()->back()->withInput();
-        }
+        return moduleView(modulePathForm('print', 'keluar'), $this->share([
+            'detail' => $detail,
+            'model' => $model,
+            'departemen' => $departemen,
+            'print' => true,
+        ]));
     }
 }

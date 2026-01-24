@@ -12,6 +12,7 @@ use App\Services\Master\SingleService;
 use App\Facades\Model\MasukModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Plugins\Response;
 
 class MasukController extends MasterController
 {
@@ -25,7 +26,9 @@ class MasukController extends MasterController
 
      public function getData()
     {
-        $query = $this->model->select(Masuk::getTableName().'.*', Supplier::field_name())->leftJoinRelationship('has_supplier');
+        $query = $this->model->select(Masuk::getTableName().'.*', Supplier::field_name())
+            ->leftJoinRelationship('has_supplier')
+            ->filter();
 
         $page = env('PAGINATION_NUMBER', 10);
         if(request()->get('page'))
@@ -51,76 +54,52 @@ class MasukController extends MasterController
         return self::$share = array_merge($view, self::$share, $data);
     }
 
-    public function postCreate(Request $request)
+    public function getDelete()
     {
-        // Check if request is coming from Livewire (has scanned_items)
-        if ($request->has('scanned_items')) {
-            return $this->handleMasukWithScannedItems($request, null);
-        }
+        $code = request()->get('code');
+        $data = self::$service->delete($this->model, $code);
 
-        // Use the default CreateFunction for regular form submissions
-        return (new class { use CreateFunction; })->postCreate($request, app(\App\Services\Master\CreateService::class));
+        MasukDetail::where('masuk_detail_code_masuk', $code)->delete();
+
+        return Response::redirectBack($data);
     }
 
-    public function postUpdate($code, Request $request)
+    public function postTable()
     {
-        // Check if request is coming from Livewire (has scanned_items)
-        if ($request->has('scanned_items')) {
-            return $this->handleMasukWithScannedItems($request, $code);
+        if (request()->exists('delete'))
+        {
+            $data = $this->deleteData(request()->get('code'));
         }
 
-        // Use the default UpdateFunction for regular form submissions
-        return (new class { use UpdateFunction; })->postUpdate($code, $request, app(\App\Services\Master\UpdateService::class));
+        if (request()->exists('sort')) {
+            $sort = array_unique(request()->get('sort'));
+            $data = self::$service->sort($this->model, $sort);
+        }
+
+        return Response::redirectBack($data);
     }
 
-    private function handleMasukWithScannedItems($request, $code = null)
+    public function deleteData($code)
     {
-        DB::beginTransaction();
+        $code = array_unique(request()->get('code'));
+        $data = self::$service->delete($this->model, $code);
 
-        try {
-            // Remove scanned_items from request data to prevent it from being saved to masuk table
-            $scannedItems = json_decode($request->get('scanned_items', '[]'), true);
-            $requestData = $request->except(['scanned_items']);
+        MasukDetail::whereIn('masuk_detail_code_masuk', $code)->delete();
 
-            if ($code) {
-                // Update existing record
-                $masuk = $this->model->findOrFail($code);
-                $masuk->update($requestData);
-            } else {
-                // Create new record
-                $masuk = $this->model->create($requestData);
-            }
+        return $data;
+    }
 
-            // Delete existing masuk detail records if updating
-            if ($code) {
-                MasukDetail::where('masuk_detail_code_masuk', $masuk->masuk_code)->delete();
-            }
+    public function getPrint($code)
+    {
+        $detail = MasukDetail::with(['has_barang'])->where('masuk_detail_code_masuk', $code)->get();
+        $model = $this->model->with(['has_supplier'])->where($this->model->getKeyName(), $code)->firstOrFail();
+        $supplier = $model->has_supplier;
 
-            // Create masuk detail records if any scanned items exist
-            if (!empty($scannedItems)) {
-                foreach ($scannedItems as $item) {
-                    MasukDetail::create([
-                        'masuk_detail_code_masuk' => $masuk->masuk_code,
-                        'masuk_detail_code_barang' => $item['barang_code'],
-                        'masuk_detail_qty' => $item['qty']
-                    ]);
-                }
-            }
-
-            DB::commit();
-
-            // Return success response
-            if ($code) {
-                session()->flash('success', 'Data updated successfully');
-            } else {
-                session()->flash('success', 'Data created successfully');
-            }
-
-            return redirect()->back();
-        } catch (\Exception $e) {
-            DB::rollback();
-            session()->flash('error', 'Error: ' . $e->getMessage());
-            return redirect()->back()->withInput();
-        }
+        return moduleView(modulePathForm('print', 'masuk'), $this->share([
+            'detail' => $detail,
+            'model' => $model,
+            'supplier' => $supplier,
+            'print' => true,
+        ]));
     }
 }

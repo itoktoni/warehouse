@@ -14,7 +14,7 @@ class BarangController extends MasterController
 {
     use CreateFunction, UpdateFunction;
 
-    public function __construct(BarangModel $model, SingleService $service)
+    public function __construct(Barang $model, SingleService $service)
     {
         self::$service = self::$service ?? $service;
         $this->model = $model::getModel();
@@ -22,7 +22,9 @@ class BarangController extends MasterController
 
     public function getData()
     {
-        $query = $this->model->select(Barang::getTableName().'.*', Category::field_name())->leftJoinRelationship('has_category');
+        $query = Barang::select(Barang::getTableName().'.*', Category::field_name())
+            ->leftJoinRelationship('has_category')
+            ->filter();
 
         $page = env('PAGINATION_NUMBER', 10);
         if(request()->get('page'))

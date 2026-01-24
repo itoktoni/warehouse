@@ -12,7 +12,6 @@
 
                         <x-form-input type="date" col="3" label="Start Date" name="start_date" />
                         <x-form-input type="date" col="3" label="End Date" name="end_date" />
-                        <x-form-select col="6" name="masuk_id_supplier" label="Supplier" :options="$supplier" />
 
                     </div>
                 </div>
@@ -33,11 +32,9 @@
                                         <input class="btn-check-d" type="checkbox">
                                     </th>
                                     <th class="text-center column-action">{{ __('Action') }}</th>
-                                    <th>Code</th>
-                                    <th>Tanggal Masuk</th>
-                                    <th>Supplier</th>
-                                    <th>No. PO</th>
-                                    <th>No. Pengiriman</th>
+                                    <th style="width: 70px">Code</th>
+                                    <th>Detail</th>
+                                    <th style="width: 85px">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,17 +44,21 @@
                                             <input type="checkbox" class="checkbox" name="code[]"
                                                 value="{{ $table->field_primary }}">
                                         </td>
-                                        <td class="col-md-2 text-center column-action">
+                                        <td data-label="Action" class="col-md-2 text-center column-action">
                                             <x-crud :model="$table">
-                                                 <x-button module="getPrint" label="Print" key="{{ $table->field_primary }}" color="success"/>
+                                                <x-button module="getOpname" key="{{ $table->field_primary }}" color="success" label="Opname" />
                                             </x-crud>
                                         </td>
 
-										<td >{{ $table->masuk_code }}</td>
-										<td >{{ formatDate($table->masuk_tanggal) }}</td>
-										<td >{{ $table->supplier_nama }}</td>
-										<td >{{ $table->masuk_no_po }}</td>
-										<td >{{ $table->masuk_no_pengiriman }}</td>
+										<td data-label="Code">{{ $table->field_primary }}</td>
+										<td data-label="Detail">
+                                            Tgl buat : {{ formatDate($table->opname_created_at) }}
+                                            <br>
+                                            Tgl Mulai : {{ formatDate($table->opname_mulai) }}
+                                            <br>
+                                            Tgl Selesai : {{ formatDate($table->opname_selesai) }}
+                                        </td>
+										<td data-label="Status">{{ OpnameType::getDescription($table->opname_status) }}</td>
 
                                     </tr>
                                 @empty

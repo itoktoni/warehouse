@@ -12,7 +12,7 @@
 
                         <x-form-input type="date" col="3" label="Start Date" name="start_date" />
                         <x-form-input type="date" col="3" label="End Date" name="end_date" />
-                        <x-form-select col="6" name="masuk_id_supplier" label="Supplier" :options="$supplier" />
+                        <x-form-select col="6" name="keluar_id_departemen" label="Departemen" :options="$departemen" />
 
                     </div>
                 </div>
@@ -34,10 +34,8 @@
                                     </th>
                                     <th class="text-center column-action">{{ __('Action') }}</th>
                                     <th>Code</th>
-                                    <th>Tanggal Masuk</th>
-                                    <th>Supplier</th>
-                                    <th>No. PO</th>
-                                    <th>No. Pengiriman</th>
+                                    <th>Tanggal Keluar</th>
+                                    <th>Departemen</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -53,11 +51,9 @@
                                             </x-crud>
                                         </td>
 
-										<td >{{ $table->masuk_code }}</td>
-										<td >{{ formatDate($table->masuk_tanggal) }}</td>
-										<td >{{ $table->supplier_nama }}</td>
-										<td >{{ $table->masuk_no_po }}</td>
-										<td >{{ $table->masuk_no_pengiriman }}</td>
+										<td >{{ $table->keluar_code }}</td>
+										<td >{{ formatDate($table->keluar_tanggal) }}</td>
+										<td >{{ $table->departemen_nama }}</td>
 
                                     </tr>
                                 @empty

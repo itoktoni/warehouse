@@ -3,22 +3,19 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Dao\Models\Masuk;
+use App\Dao\Models\Keluar;
 use App\Dao\Models\Barang;
-use App\Dao\Models\MasukDetail;
+use App\Dao\Models\KeluarDetail;
 use Illuminate\Support\Facades\DB;
 
-class MasukForm extends Component
+class KeluarForm extends Component
 {
     public $model;
-    public $supplier;
-    public $masuk_code;
-    public $masuk_tanggal;
-    public $masuk_id_supplier;
-    public $masuk_no_po;
-    public $masuk_tanggal_pengiriman;
-    public $masuk_no_pengiriman;
-    public $masuk_catatan;
+    public $departemen;
+    public $keluar_code;
+    public $keluar_tanggal;
+    public $keluar_id_departemen;
+    public $keluar_catatan;
     public $form = false;
 
     // For barcode scanning
@@ -30,39 +27,36 @@ class MasukForm extends Component
         $this->model = $model;
 
         if ($model && request()->segment(5) == 'update') {
-            $this->masuk_code = $model->masuk_code;
-            $this->masuk_tanggal = $model->masuk_tanggal ?? date('Y-m-d');
-            $this->masuk_id_supplier = $model->masuk_id_supplier;
-            $this->masuk_no_po = $model->masuk_no_po;
-            $this->masuk_tanggal_pengiriman = $model->masuk_tanggal_pengiriman;
-            $this->masuk_no_pengiriman = $model->masuk_no_pengiriman;
-            $this->masuk_catatan = $model->masuk_catatan;
+            $this->keluar_code = $model->keluar_code;
+            $this->keluar_tanggal = $model->keluar_tanggal ?? date('Y-m-d');
+            $this->keluar_id_departemen = $model->keluar_id_departemen;
+            $this->keluar_catatan = $model->keluar_catatan;
             $this->form = true;
 
-            $data_detail = MasukDetail::with('has_barang')->where('masuk_detail_code_masuk', $this->masuk_code)->get();
+            $data_detail = KeluarDetail::with('has_barang')->where('keluar_detail_code_keluar', $this->keluar_code)->get();
 
             // Load existing scanned items if editing
             if ($data_detail) {
                 foreach ($data_detail as $detail) {
                     $this->scanned_items[] = [
-                        'barang_code' => $detail->masuk_detail_code_barang,
-                        'barang_nama' => $detail->has_barang ? $detail->has_barang->barang_nama : $detail->masuk_detail_code_barang,
-                        'qty' => $detail->masuk_detail_qty,
-                        'db' => $detail->masuk_detail_id
+                        'barang_code' => $detail->keluar_detail_code_barang,
+                        'barang_nama' => $detail->has_barang ? $detail->has_barang->barang_nama : $detail->keluar_detail_code_barang,
+                        'qty' => $detail->keluar_detail_qty,
+                        'db' => $detail->keluar_detail_id
                     ];
                 }
             }
         } else {
-            $this->masuk_tanggal = date('Y-m-d');
+            $this->keluar_tanggal = date('Y-m-d');
         }
 
-        // Load supplier options
-        $this->supplier = \App\Dao\Models\Supplier::getOptions();
+        // Load departemen options
+        $this->departemen = \App\Dao\Models\Departemen::getOptions();
     }
 
     public function render()
     {
-        return view('livewire.masuk-form');
+        return view('livewire.keluar-form');
     }
 
     public function addScannedItem()
@@ -110,20 +104,20 @@ class MasukForm extends Component
 
         if($id) {
             // If the item exists in the database, delete it
-            $detail = MasukDetail::find($id);
+            $detail = KeluarDetail::find($id);
             if ($detail) {
-                $barang = Barang::where('barang_code', $detail->masuk_detail_code_barang)->first();
+                $barang = Barang::where('barang_code', $detail->keluar_detail_code_barang)->first();
                 $qty_barang = $barang->barang_qty;
-                $total = $qty_barang - $detail->masuk_detail_qty;
-                Barang::where('barang_code', $detail->masuk_detail_code_barang)->update([
+                $total = $qty_barang + $detail->keluar_detail_qty;
+                Barang::where('barang_code', $detail->keluar_detail_code_barang)->update([
                     'barang_qty' => $total
                 ]);
 
                 $detail->delete();
 
-                $masuk = MasukDetail::where('masuk_detail_code_masuk', $detail->masuk_detail_code_masuk)->count();
+                $masuk = KeluarDetail::where('keluar_detail_code_keluar', $detail->keluar_detail_code_keluar)->count();
                 if ($masuk == 0) {
-                   Masuk::where('masuk_code', $detail->masuk_detail_code_masuk)->delete();
+                   Keluar::where('keluar_code', $detail->keluar_detail_code_keluar)->delete();
                 }
             }
         }
@@ -144,61 +138,55 @@ class MasukForm extends Component
     public function save()
     {
         $this->validate([
-            'masuk_tanggal' => 'required|date',
-            // 'masuk_id_supplier' => 'required',
+            'keluar_tanggal' => 'required|date',
+            // 'keluar_id_departemen' => 'required',
         ]);
 
         DB::beginTransaction();
 
         try {
 
-            if ($this->masuk_code) {
+            if ($this->keluar_code) {
                 // Update existing record
                 $this->model->update([
-                    'masuk_tanggal' => $this->masuk_tanggal,
-                    'masuk_id_supplier' => $this->masuk_id_supplier,
-                    'masuk_no_po' => $this->masuk_no_po,
-                    'masuk_tanggal_pengiriman' => $this->masuk_tanggal_pengiriman,
-                    'masuk_no_pengiriman' => $this->masuk_no_pengiriman,
-                    'masuk_catatan' => $this->masuk_catatan,
+                    'keluar_tanggal' => $this->keluar_tanggal,
+                    'keluar_id_departemen' => $this->keluar_id_departemen,
+                    'keluar_catatan' => $this->keluar_catatan,
                 ]);
 
                 // Delete existing masuk detail records
-                MasukDetail::where('masuk_detail_code_masuk', $this->model->masuk_code)->delete();
+                KeluarDetail::where('keluar_detail_code_keluar', $this->model->keluar_code)->delete();
 
-                // Get the masuk_code for the existing record
-                $masukCode = $this->model->masuk_code;
+                // Get the keluar_code for the existing record
+                $masukCode = $this->model->keluar_code;
             } else {
 
                 $code = unic(10).date('Ymd');
 
                 // Create new record
-                $newMasuk = Masuk::create([
-                    'masuk_code' => $code,
-                    'masuk_tanggal' => $this->masuk_tanggal,
-                    'masuk_id_supplier' => $this->masuk_id_supplier,
-                    'masuk_no_po' => $this->masuk_no_po,
-                    'masuk_tanggal_pengiriman' => $this->masuk_tanggal_pengiriman,
-                    'masuk_no_pengiriman' => $this->masuk_no_pengiriman,
-                    'masuk_catatan' => $this->masuk_catatan,
+                $newKeluar = Keluar::create([
+                    'keluar_code' => $code,
+                    'keluar_tanggal' => $this->keluar_tanggal,
+                    'keluar_id_departemen' => $this->keluar_id_departemen,
+                    'keluar_catatan' => $this->keluar_catatan,
                 ]);
 
-                // Get the masuk_code for the newly created record
-                $masukCode = $newMasuk->masuk_code;
+                // Get the keluar_code for the newly created record
+                $masukCode = $newKeluar->keluar_code;
             }
 
-            // Create masuk detail records using the correct masuk_code
+            // Create masuk detail records using the correct keluar_code
             foreach ($this->scanned_items as $item) {
-                MasukDetail::create([
-                    'masuk_detail_code_masuk' => $masukCode,
-                    'masuk_detail_code_barang' => $item['barang_code'],
-                    'masuk_detail_qty' => $item['qty']
+                KeluarDetail::create([
+                    'keluar_detail_code_keluar' => $masukCode,
+                    'keluar_detail_code_barang' => $item['barang_code'],
+                    'keluar_detail_qty' => $item['qty']
                 ]);
 
                 $barang = Barang::where('barang_code', $item['barang_code'])->first();
                 $qty_barang = $barang->barang_qty;
 
-                $total = $qty_barang + $item['qty'];
+                $total = $qty_barang - $item['qty'];
                 Barang::where('barang_code', $item['barang_code'])->update([
                     'barang_qty' => $total
                 ]);

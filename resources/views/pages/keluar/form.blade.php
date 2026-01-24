@@ -1,5 +1,5 @@
 <x-layout>
-    @livewire('masuk-form', ['model' => $model])
+    @livewire('keluar-form', ['model' => $model])
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
