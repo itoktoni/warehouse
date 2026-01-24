@@ -2,6 +2,7 @@
 
 namespace App\Charts;
 
+use App\Dao\Models\Barang;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 
 class Dashboard
@@ -15,13 +16,12 @@ class Dashboard
 
     public function build()
     {
-        return $this->chart->barChart()
-            ->setTitle('San Francisco vs Boston.')
-            ->setSubtitle('Wins during season 2021.')
-            ->setGrid()
-            ->addData('San Francisco', [6, 9, 3, 4, 10, 8])
-            ->addData('Boston', [7, 3, 8, 2, 6, 4])
-            ->addData('Wales', [7, 3, 8, 2, 6, 4])
-            ->setXAxis(['January', 'February', 'March', 'April', 'May', 'June']);
+        $barang = Barang::limit(10)->pluck('barang_nama')->toArray();
+        $qty = Barang::limit(10)->pluck('barang_qty')->toArray();
+
+        return $this->chart->donutChart()
+            ->setTitle('TOTAL QTY 10 BARANG TERATAS.')
+            ->addData($qty)
+            ->setLabels($barang);
     }
 }

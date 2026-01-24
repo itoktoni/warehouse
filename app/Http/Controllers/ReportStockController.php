@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Facades\Model\UserModel;
+use App\Dao\Models\Barang;
 use App\Http\Controllers\Core\ReportController;
-use App\Jobs\JobExportCsvUser;
 use Illuminate\Http\Request;
 
-class ReportUserController extends ReportController
+class ReportStockController extends ReportController
 {
     public $data;
 
-    public function __construct(UserModel $model)
+    public function __construct(Barang $model)
     {
-        $this->model = $model;
+        $this->model = $model::getModel();
     }
 
     public function getData()

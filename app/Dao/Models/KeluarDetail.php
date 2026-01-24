@@ -24,9 +24,9 @@ class KeluarDetail extends SystemModel
         'keluar_detail_qty',
     ];
 
-    public function has_masuk()
+    public function has_keluar()
     {
-        return $this->belongsTo(Masuk::class, 'keluar_detail_code_keluar', 'keluar_code');
+        return $this->belongsTo(Keluar::class, 'keluar_detail_code_keluar', 'keluar_code');
     }
 
     public function has_barang()
