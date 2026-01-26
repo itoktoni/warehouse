@@ -12,6 +12,6 @@ trait UpdateFunction
     {
         $data = $service->update($this->model, $request, $code);
 
-        return Response::redirectBack($data);
+        return Response::redirectToRoute($this->module('getTable'), $data);
     }
 }

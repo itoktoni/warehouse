@@ -46,6 +46,7 @@ class Keluar extends SystemModel
         'keluar_id_departemen',
         'start_date',
         'end_date',
+        'keluar_nama',
     ];
 
     const CREATED_AT = 'keluar_created_at';
@@ -58,7 +59,7 @@ class Keluar extends SystemModel
      *
      * @var array<int, string>
      */
-    protected $fillable = ['keluar_code', 'keluar_no_po', 'keluar_tanggal_pengiriman', 'keluar_no_pengiriman', 'keluar_id_departemen', 'keluar_tanggal', 'keluar_catatan', 'keluar_created_at', 'keluar_updated_at', 'keluar_created_by', 'keluar_updated_by'];
+    protected $fillable = ['keluar_code', 'keluar_nama', 'keluar_no_po', 'keluar_tanggal_pengiriman', 'keluar_no_pengiriman', 'keluar_id_departemen', 'keluar_tanggal', 'keluar_catatan', 'keluar_created_at', 'keluar_updated_at', 'keluar_created_by', 'keluar_updated_by'];
 
     public function has_departemen()
     {

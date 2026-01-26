@@ -17,6 +17,7 @@
     <!-- CUSTOMER INFO -->
     <div class="invoice-info">
         <h2>Departemen: {{ $departemen->departemen_nama ?? '' }}</h2>
+        <h2>Nama Penerima: {{ $model->keluar_nama ?? '' }}</h2>
         <p>Tanggal: {{ formatDate($model->keluar_tanggal ?? '') }}</p>
         <p>Code: {{ $model->field_primary ?? '' }}</p>
     </div>

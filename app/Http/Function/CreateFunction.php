@@ -11,6 +11,6 @@ trait CreateFunction
     public function postCreate(GeneralRequest $request, CreateService $service)
     {
         $data = $service->save($this->model, $request);
-        return Response::redirectBack($data);
+        return Response::redirectToRoute($this->module('getTable'), $data);
     }
 }

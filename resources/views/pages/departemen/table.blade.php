@@ -31,11 +31,11 @@
                             <tbody>
                                 @forelse($data as $table)
                                     <tr>
-                                        <td>
+                                        <td data-label="Checkbox">
                                             <input type="checkbox" class="checkbox" name="code[]"
                                                 value="{{ $table->field_primary }}">
                                         </td>
-                                        <td class="col-md-2 text-center column-action">
+                                        <td data-label="Action" class="col-md-2 text-center column-action">
                                             <x-crud :model="$table" />
                                         </td>
 

@@ -43,21 +43,23 @@
                             <tbody>
                                 @forelse($data as $table)
                                     <tr>
-                                        <td>
+                                        <td data-label="Checkbox">
                                             <input type="checkbox" class="checkbox" name="code[]"
                                                 value="{{ $table->field_primary }}">
                                         </td>
-                                        <td class="col-md-2 text-center column-action">
-                                            <x-crud :model="$table">
-                                                 <x-button module="getPrint" label="Print" key="{{ $table->field_primary }}" color="success"/>
+                                        <td data-label="Action" class="col-md-2 text-center column-action">
+                                            <x-crud :model="$table" :action="['blank']">
+                                                <x-button module="getUpdate" key="{{ $table->field_primary }}" color="primary" icon="pencil-square" />
+                                                <x-button module="getDelete" key="{{ $table->field_primary }}" color="danger" icon="trash3" onclick="return confirm('Apakah anda yakin ingin menghapus ?')" class="button-delete" />
+                                                <x-button module="getPrint" label="Print" key="{{ $table->field_primary }}" color="success"/>
                                             </x-crud>
                                         </td>
 
-										<td >{{ $table->masuk_code }}</td>
-										<td >{{ formatDate($table->masuk_tanggal) }}</td>
-										<td >{{ $table->supplier_nama }}</td>
-										<td >{{ $table->masuk_no_po }}</td>
-										<td >{{ $table->masuk_no_pengiriman }}</td>
+										<td data-label="Code">{{ $table->masuk_code }}</td>
+										<td data-label="Tanggal">{{ formatDate($table->masuk_tanggal) }}</td>
+										<td data-label="Supplier">{{ $table->supplier_nama }}</td>
+										<td data-label="No. PO">{{ $table->masuk_no_po }}</td>
+										<td data-label="No. Pengiriman">{{ $table->masuk_no_pengiriman }}</td>
 
                                     </tr>
                                 @empty

@@ -27,10 +27,6 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th width="9" class="center">
-                                        <input class="btn-check-d" type="checkbox">
-                                    </th>
-                                    <th class="text-center column-action">{{ __('Action') }}</th>
                                        <th>Code</th>
                                        <th>Nama</th>
                                        <th>Qty</th>
@@ -39,18 +35,9 @@
                             <tbody>
                                 @forelse($data as $table)
                                     <tr>
-                                        <td>
-                                            <input type="checkbox" class="checkbox" name="code[]"
-                                                value="{{ $table->field_primary }}">
-                                        </td>
-                                        <td class="col-md-2 text-center column-action">
-                                            <x-crud :model="$table" />
-                                        </td>
-
-										<td >{{ $table->barang_code }}</td>
-										<td >{{ $table->barang_nama }}</td>
-										<td >{{ $table->barang_qty }}</td>
-
+										<td data-label="Code">{{ $table->barang_code }}</td>
+										<td data-label="Nama">{{ $table->barang_nama }}</td>
+										<td data-label="Qty">{{ $table->barang_qty }}</td>
                                     </tr>
                                 @empty
                                 @endforelse

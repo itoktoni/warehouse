@@ -28,7 +28,8 @@ class MasukController extends MasterController
     {
         $query = $this->model->select(Masuk::getTableName().'.*', Supplier::field_name())
             ->leftJoinRelationship('has_supplier')
-            ->filter();
+            ->filter()
+            ->orderBy('masuk_created_at', 'DESC');
 
         $page = env('PAGINATION_NUMBER', 10);
         if(request()->get('page'))

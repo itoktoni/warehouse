@@ -14,6 +14,7 @@ class KeluarForm extends Component
     public $departemen;
     public $keluar_code;
     public $keluar_tanggal;
+    public $keluar_nama;
     public $keluar_id_departemen;
     public $keluar_catatan;
     public $form = false;
@@ -26,8 +27,9 @@ class KeluarForm extends Component
     {
         $this->model = $model;
 
-        if ($model && request()->segment(5) == 'update') {
+        if (request()->segment(5) == 'update') {
             $this->keluar_code = $model->keluar_code;
+            $this->keluar_nama = $model->keluar_nama;
             $this->keluar_tanggal = $model->keluar_tanggal ?? date('Y-m-d');
             $this->keluar_id_departemen = $model->keluar_id_departemen;
             $this->keluar_catatan = $model->keluar_catatan;
@@ -78,9 +80,18 @@ class KeluarForm extends Component
                 }
             }
 
+            if ($item->barang_qty < 1) {
+                session()->flash('error', 'Stock '.$item->barang_nama.' tersisa : ' . $item->barang_qty );
+                return;
+            }
+
+            $kurang = 0;
+
             if ($existingIndex !== null) {
                 // Increment quantity if item already exists
                 $this->scanned_items[$existingIndex]['qty'] += 1;
+                $kurang = $this->scanned_items[$existingIndex]['qty'];
+
             } else {
                 // Add new item
                 $this->scanned_items[] = [
@@ -89,9 +100,13 @@ class KeluarForm extends Component
                     'qty' => 1,
                     'db' => false
                 ];
+
+                $kurang = 1;
             }
 
+            session()->flash('message', 'Stock '.$item->barang_nama.' tersisa : ' . $item->barang_qty - $kurang);
             $this->barcode_input = '';
+
         } else {
             session()->flash('error', 'Item not found with barcode: ' . $this->barcode_input);
         }
@@ -139,7 +154,12 @@ class KeluarForm extends Component
     {
         $this->validate([
             'keluar_tanggal' => 'required|date',
-            // 'keluar_id_departemen' => 'required',
+            'keluar_nama' => 'required',
+        ],
+        [
+            'keluar_tanggal.required' => 'Tanggal keluar wajib diisi.',
+            'keluar_tanggal.date' => 'Format tanggal tidak valid.',
+            'keluar_nama.required' => 'Nama Penerima wajib diisi.',
         ]);
 
         DB::beginTransaction();
@@ -150,6 +170,7 @@ class KeluarForm extends Component
                 // Update existing record
                 $this->model->update([
                     'keluar_tanggal' => $this->keluar_tanggal,
+                    'keluar_nama' => $this->keluar_nama,
                     'keluar_id_departemen' => $this->keluar_id_departemen,
                     'keluar_catatan' => $this->keluar_catatan,
                 ]);
@@ -158,7 +179,8 @@ class KeluarForm extends Component
                 KeluarDetail::where('keluar_detail_code_keluar', $this->model->keluar_code)->delete();
 
                 // Get the keluar_code for the existing record
-                $masukCode = $this->model->keluar_code;
+                $keluarCode = $this->model->keluar_code;
+
             } else {
 
                 $code = unic(10).date('Ymd');
@@ -167,24 +189,35 @@ class KeluarForm extends Component
                 $newKeluar = Keluar::create([
                     'keluar_code' => $code,
                     'keluar_tanggal' => $this->keluar_tanggal,
+                    'keluar_nama' => $this->keluar_nama,
                     'keluar_id_departemen' => $this->keluar_id_departemen,
                     'keluar_catatan' => $this->keluar_catatan,
                 ]);
 
                 // Get the keluar_code for the newly created record
-                $masukCode = $newKeluar->keluar_code;
+                $keluarCode = $newKeluar->keluar_code;
             }
+
+            $this->keluar_code = $keluarCode;
 
             // Create masuk detail records using the correct keluar_code
             foreach ($this->scanned_items as $item) {
                 KeluarDetail::create([
-                    'keluar_detail_code_keluar' => $masukCode,
+                    'keluar_detail_code_keluar' => $keluarCode,
                     'keluar_detail_code_barang' => $item['barang_code'],
                     'keluar_detail_qty' => $item['qty']
                 ]);
 
                 $barang = Barang::where('barang_code', $item['barang_code'])->first();
                 $qty_barang = $barang->barang_qty;
+
+                if($qty_barang < $item['qty'])
+                {
+                    // Handle insufficient stock
+                    session()->flash('error', 'Stock '.$barang->barang_nama.' tersisa : ' . $qty_barang );
+                    DB::rollback();
+                    return;
+                }
 
                 $total = $qty_barang - $item['qty'];
                 Barang::where('barang_code', $item['barang_code'])->update([

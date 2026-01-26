@@ -32,19 +32,19 @@
                             <tbody>
                                 @forelse($data as $table)
                                     <tr>
-                                        <td>
+                                        <td data-label="Checkbox">
                                             <input type="checkbox" class="checkbox" name="code[]"
                                                 value="{{ $table->field_primary }}">
                                         </td>
-                                        <td class="col-md-2 text-center column-action">
+                                        <td data-label="Action" class="col-md-2 text-center column-action">
                                             <x-crud :model="$table" />
                                         </td>
 
-										<td >{{ $table->supplier_id }}</td>
-										<td >{{ $table->supplier_nama }}</td>
-										<td >{{ $table->supplier_pic }}</td>
-										<td >{{ $table->supplier_telp }}</td>
-										<td >{{ $table->supplier_email }}</td>
+										<td data-label="ID">{{ $table->supplier_id }}</td>
+										<td data-label="Nama">{{ $table->supplier_nama }}</td>
+										<td data-label="PIC">{{ $table->supplier_pic }}</td>
+										<td data-label="Telp">{{ $table->supplier_telp }}</td>
+										<td data-label="Email">{{ $table->supplier_email }}</td>
 
                                     </tr>
                                 @empty

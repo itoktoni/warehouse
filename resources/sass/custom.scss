@@ -2,6 +2,10 @@ body {
   background: whitesmoke;
 }
 
+input[readonly] {
+    background-color: #f1f1f1; /* A light gray color */
+}
+
 .page-footer {
   position: fixed;
   z-index: 99;

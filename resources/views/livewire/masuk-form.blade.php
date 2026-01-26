@@ -13,8 +13,6 @@
         <div class="card-body">
             <div class="row">
 
-                @if($form)
-
                 <div class="col-md-3 mb-3">
                     <label for="masuk_code" class="form-label">Generated Code</label>
                     <input type="text"
@@ -23,8 +21,6 @@
                            wire:model="masuk_code"
                            readonly>
                 </div>
-
-                @endif
 
                 <div class="col-md-3 mb-3">
                     <label for="masuk_tanggal" class="form-label">Tanggal</label>
@@ -153,7 +149,7 @@
                                             <button type="button"
                                                     class="btn btn-danger btn-sm"
                                                     wire:click="removeScannedItem({{ $index }}, {{ $item['db'] ?? null }})">
-                                                Remove
+                                                Hapus
                                             </button>
                                         </td>
                                     </tr>
@@ -170,8 +166,14 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end mt-3">
-                <button type="button" class="btn btn-primary" wire:click="save">Save</button>
+            <div class="page-action">
+                <h5 class="action-container">
+                    <div class="button">
+                        <div class="button button-action">
+                            <button type="button" class="btn btn-primary" wire:click="save">Save</button>
+                        </div>
+                    </div>
+                </h5>
             </div>
         </div>
     </div>

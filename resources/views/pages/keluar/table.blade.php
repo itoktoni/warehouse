@@ -12,7 +12,8 @@
 
                         <x-form-input type="date" col="3" label="Start Date" name="start_date" />
                         <x-form-input type="date" col="3" label="End Date" name="end_date" />
-                        <x-form-select col="6" name="keluar_id_departemen" label="Departemen" :options="$departemen" />
+                        <x-form-input col="3" label="Nama Penerima" name="keluar_nama" />
+                        <x-form-select col="3" name="keluar_id_departemen" label="Departemen" :options="$departemen" />
 
                     </div>
                 </div>
@@ -36,24 +37,26 @@
                                     <th>Code</th>
                                     <th>Tanggal Keluar</th>
                                     <th>Departemen</th>
+                                    <th>Nama Penerima</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($data as $table)
                                     <tr>
-                                        <td>
+                                        <td data-label="Checkbox">
                                             <input type="checkbox" class="checkbox" name="code[]"
                                                 value="{{ $table->field_primary }}">
                                         </td>
-                                        <td class="col-md-2 text-center column-action">
+                                        <td data-label="Action" class="col-md-2 text-center column-action">
                                             <x-crud :model="$table">
                                                  <x-button module="getPrint" label="Print" key="{{ $table->field_primary }}" color="success"/>
                                             </x-crud>
                                         </td>
 
-										<td >{{ $table->keluar_code }}</td>
-										<td >{{ formatDate($table->keluar_tanggal) }}</td>
-										<td >{{ $table->departemen_nama }}</td>
+										<td data-label="Code">{{ $table->keluar_code }}</td>
+										<td data-label="Tanggal">{{ formatDate($table->keluar_tanggal) }}</td>
+										<td data-label="Departemen">{{ $table->departemen_nama }}</td>
+										<td data-label="Nama PIC">{{ $table->keluar_nama }}</td>
 
                                     </tr>
                                 @empty
