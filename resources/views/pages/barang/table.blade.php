@@ -35,7 +35,9 @@
                                                 value="{{ $table->field_primary }}">
                                         </td>
                                         <td data-label="Action" class="col-md-2 text-center column-action">
-                                            <x-crud :model="$table" />
+                                            <x-crud :model="$table">
+                                                 <x-button module="getPrint" label="Print" key="{{ $table->field_primary }}" color="success"/>
+                                            </x-crud>
                                         </td>
 
 										<td data-label="Barcode" class="text-center">{!! QrCode::size(50)->generate($table->field_primary) !!}</td>

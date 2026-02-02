@@ -49,4 +49,14 @@ class BarangController extends MasterController
 
         return self::$share = array_merge($view, self::$share, $data);
     }
+
+    public function getPrint($code)
+    {
+        $model = Barang::find($code);
+
+        return $this->views($this->template(), $this->share([
+            'model' => $model,
+            'print' => true,
+        ]));
+    }
 }
