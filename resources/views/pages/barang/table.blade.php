@@ -36,7 +36,7 @@
                                         </td>
                                         <td data-label="Action" class="col-md-2 text-center column-action">
                                             <x-crud :model="$table">
-                                                 <x-button module="getPrint" label="Print" key="{{ $table->field_primary }}" color="success"/>
+                                                 <x-button label="Print" href="{{ moduleRoute('getPrint', $table->field_primary) }}?v={{ uniqid() }}" color="success"/>
                                             </x-crud>
                                         </td>
 
