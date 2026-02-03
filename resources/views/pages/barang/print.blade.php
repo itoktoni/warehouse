@@ -7,14 +7,14 @@
 @section('content')
 
 <style>
-     @page { margin: 0px; }
+     @page { margin: 10px; }
         body { margin: 0px; text-align: center; }
 </style>
 
 <div>
 
     <!-- HEADER -->
-    <div style="text-align: center; margin: 10px;">
+    <div style="text-align: center; margin: 0px;">
         <p style="margin: 0px;padding:0px;">
             {{ $model->field_primary ?? '' }}
         </p>
