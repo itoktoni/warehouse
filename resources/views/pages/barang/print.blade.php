@@ -16,7 +16,7 @@
     <!-- HEADER -->
     <div style="text-align: center; margin: 0px;margin-top:0px">
         <span style="font-size: 5px">.</span>
-        <p style="margin: 0px;padding:0px;">
+        <p style="margin: 0px;padding:0px;font-size:14px;">
             {{ $model->field_primary ?? '' }}
         </p>
 
@@ -24,7 +24,7 @@
              <img src="data:image/svg+xml;base64,{{ $qrcode }}" width="50" height="50">
         </p>
 
-        <p style="margin: 0px;padding:0px;font-size:14px;">
+        <p style="margin: 0px;padding:0px;font-size:12px;padding:0px 10px">
             {{ $model->field_name ?? '' }}
         </p>
     </div>
