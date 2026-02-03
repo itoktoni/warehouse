@@ -62,7 +62,7 @@ class BarangController extends MasterController
             'print' => true,
         ]);
 
-        $pdf->setPaper([0, 0, 156, 113], 'potrait');
+        $pdf->setPaper([0, 0, 155, 113], 'potrait');
 
 
         // You can stream the PDF to the browser or download it
