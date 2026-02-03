@@ -15,6 +15,7 @@
 
     <!-- HEADER -->
     <div style="text-align: center; margin: 0px;margin-top:0px">
+        <span style="font-size: 5px">.</span>
         <p style="margin: 0px;padding:0px;font-size:14px;">
             {{ $model->field_primary ?? '' }}
         </p>
