@@ -67,7 +67,7 @@ class BarangController extends MasterController
 
         // You can stream the PDF to the browser or download it
         // return $pdf->stream('invoice.pdf');
-        return $pdf->stream($model->field_primary.'.pdf')
+        return $pdf->stream(unic(10).'.pdf')
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate');
 
         return $this->views($this->template(), $this->share([
