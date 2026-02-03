@@ -8,7 +8,8 @@ use App\Http\Controllers\Core\MasterController;
 use App\Http\Function\CreateFunction;
 use App\Http\Function\UpdateFunction;
 use App\Services\Master\SingleService;
-use App\Facades\Model\BarangModel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BarangController extends MasterController
 {
@@ -53,6 +54,20 @@ class BarangController extends MasterController
     public function getPrint($code)
     {
         $model = Barang::find($code);
+        $qrcode = base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($model->field_primary));
+
+        $pdf = Pdf::loadView($this->template(), [
+            'model' => $model,
+            'qrcode' => $qrcode,
+            'print' => true,
+        ]);
+
+        $pdf->setPaper([0, 0, 142, 227], 'landscape');
+
+
+        // You can stream the PDF to the browser or download it
+        // return $pdf->stream('invoice.pdf');
+        return $pdf->stream($model->field_primary.'.pdf');
 
         return $this->views($this->template(), $this->share([
             'model' => $model,

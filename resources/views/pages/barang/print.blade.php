@@ -2,24 +2,29 @@
 
 @section('header')
 
-<x-action_print/>
-
 @endsection
 
 @section('content')
-<div class="invoice">
+
+<style>
+     @page { margin: 0px; }
+        body { margin: 0px; text-align: center; }
+        .container { width: 141.732pt; height: 226.772pt; }
+</style>
+
+<div>
 
     <!-- HEADER -->
-    <div class="space text-center">
-        <h2>
+    <div style="text-align: center; margin: 10px;">
+        <h2 style="margin: 0px;padding:0px;">
             {{ $model->field_primary ?? '' }}
         </h2>
 
-        <h4 class="text-center">
-            {!! QrCode::size(100)->generate($model->field_primary) !!}
+        <h4 style="margin-top: 10px;margin-bottom:10px;padding:0px;">
+             <img src="data:image/svg+xml;base64,{{ $qrcode }}" width="70" height="70">
         </h4>
 
-        <h3 class="text-center">
+        <h3 style="margin: 0px;padding:0px;">
             {{ $model->field_name ?? '' }}
         </h3>
 

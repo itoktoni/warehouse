@@ -11,6 +11,7 @@
         "php": "^8.1",
         "aaronfrancis/fast-paginate": "^2.0",
         "arielmejiadev/larapex-charts": "*",
+        "barryvdh/laravel-dompdf": "^3.1",
         "bensampo/laravel-enum": "^6.2",
         "intervention/image-laravel": "^1.5",
         "izniburak/laravel-auto-routes": "1.6.0",
