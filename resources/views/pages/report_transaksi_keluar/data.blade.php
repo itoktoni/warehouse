@@ -27,6 +27,7 @@
 			<tr>
 				<th width="1">No. </th>
 				<th>KODE TRANSAKSI</th>
+				<th>TANGGAL</th>
 				<th>KODE BARANG</th>
 				<th>NAMA BARANG</th>
 				<th>QTY</th>
@@ -41,6 +42,7 @@
 			<tr>
 				<td>{{ $loop->iteration }}</td>
 				<td>{{ $table->keluar_detail_code_keluar }}</td>
+				<td>{{ $table->keluar_tanggal }}</td>
 				<td>{{ $table->barang_code }}</td>
 				<td>{{ $table->barang_nama }}</td>
 				<td>{{ $table->keluar_detail_qty }}</td>

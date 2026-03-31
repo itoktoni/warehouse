@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Livewire;
 
-use Livewire\Component;
-use App\Dao\Models\Keluar;
 use App\Dao\Models\Barang;
+use App\Dao\Models\Keluar;
 use App\Dao\Models\KeluarDetail;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 
 class KeluarForm extends Component
 {
@@ -28,12 +27,12 @@ class KeluarForm extends Component
         $this->model = $model;
 
         if (request()->segment(5) == 'update') {
-            $this->keluar_code = $model->keluar_code;
-            $this->keluar_nama = $model->keluar_nama;
-            $this->keluar_tanggal = $model->keluar_tanggal ?? date('Y-m-d');
+            $this->keluar_code          = $model->keluar_code;
+            $this->keluar_nama          = $model->keluar_nama;
+            $this->keluar_tanggal       = $model->keluar_tanggal ?? date('Y-m-d');
             $this->keluar_id_departemen = $model->keluar_id_departemen;
-            $this->keluar_catatan = $model->keluar_catatan;
-            $this->form = true;
+            $this->keluar_catatan       = $model->keluar_catatan;
+            $this->form                 = true;
 
             $data_detail = KeluarDetail::with('has_barang')->where('keluar_detail_code_keluar', $this->keluar_code)->get();
 
@@ -43,8 +42,8 @@ class KeluarForm extends Component
                     $this->scanned_items[] = [
                         'barang_code' => $detail->keluar_detail_code_barang,
                         'barang_nama' => $detail->has_barang ? $detail->has_barang->barang_nama : $detail->keluar_detail_code_barang,
-                        'qty' => $detail->keluar_detail_qty,
-                        'db' => $detail->keluar_detail_id
+                        'qty'         => $detail->keluar_detail_qty,
+                        'db'          => $detail->keluar_detail_id,
                     ];
                 }
             }
@@ -81,7 +80,8 @@ class KeluarForm extends Component
             }
 
             if ($item->barang_qty < 1) {
-                session()->flash('error', 'Stock '.$item->barang_nama.' tersisa : ' . $item->barang_qty );
+                $sisa = $item->barang_qty ?? 0;
+                session()->flash('error', 'Stock ' . $item->barang_nama . ' tersisa : ' . $sisa);
                 return;
             }
 
@@ -97,14 +97,14 @@ class KeluarForm extends Component
                 $this->scanned_items[] = [
                     'barang_code' => $item->barang_code,
                     'barang_nama' => $item->barang_nama,
-                    'qty' => 1,
-                    'db' => false
+                    'qty'         => 1,
+                    'db'          => false,
                 ];
 
                 $kurang = 1;
             }
 
-            session()->flash('message', 'Stock '.$item->barang_nama.' tersisa : ' . $item->barang_qty - $kurang);
+            session()->flash('message', 'Stock ' . $item->barang_nama . ' tersisa : ' . $item->barang_qty);
             $this->barcode_input = '';
 
         } else {
@@ -117,22 +117,23 @@ class KeluarForm extends Component
         unset($this->scanned_items[$index]);
         $this->scanned_items = array_values($this->scanned_items); // Re-index array
 
-        if($id) {
+        if ($id) {
             // If the item exists in the database, delete it
             $detail = KeluarDetail::find($id);
             if ($detail) {
-                $barang = Barang::where('barang_code', $detail->keluar_detail_code_barang)->first();
+                $barang     = Barang::where('barang_code', $detail->keluar_detail_code_barang)->first();
                 $qty_barang = $barang->barang_qty;
-                $total = $qty_barang + $detail->keluar_detail_qty;
+                $total      = $qty_barang + $detail->keluar_detail_qty;
                 Barang::where('barang_code', $detail->keluar_detail_code_barang)->update([
-                    'barang_qty' => $total
+                    'barang_qty' => $total,
                 ]);
 
                 $detail->delete();
 
                 $masuk = KeluarDetail::where('keluar_detail_code_keluar', $detail->keluar_detail_code_keluar)->count();
                 if ($masuk == 0) {
-                   Keluar::where('keluar_code', $detail->keluar_detail_code_keluar)->delete();
+                    Keluar::where('keluar_code', $detail->keluar_detail_code_keluar)->delete();
+                    return $this->redirectRoute('transaksi_keluar.getTable');
                 }
             }
         }
@@ -154,25 +155,27 @@ class KeluarForm extends Component
     {
         $this->validate([
             'keluar_tanggal' => 'required|date',
-            'keluar_nama' => 'required',
+            'keluar_nama'    => 'required',
         ],
-        [
-            'keluar_tanggal.required' => 'Tanggal keluar wajib diisi.',
-            'keluar_tanggal.date' => 'Format tanggal tidak valid.',
-            'keluar_nama.required' => 'Nama Penerima wajib diisi.',
-        ]);
+            [
+                'keluar_tanggal.required' => 'Tanggal keluar wajib diisi.',
+                'keluar_tanggal.date'     => 'Format tanggal tidak valid.',
+                'keluar_nama.required'    => 'Nama Penerima wajib diisi.',
+            ]);
 
         DB::beginTransaction();
 
         try {
 
+            $code = false;
+
             if ($this->keluar_code) {
                 // Update existing record
                 $this->model->update([
-                    'keluar_tanggal' => $this->keluar_tanggal,
-                    'keluar_nama' => $this->keluar_nama,
+                    'keluar_tanggal'       => $this->keluar_tanggal,
+                    'keluar_nama'          => $this->keluar_nama,
                     'keluar_id_departemen' => $this->keluar_id_departemen,
-                    'keluar_catatan' => $this->keluar_catatan,
+                    'keluar_catatan'       => $this->keluar_catatan,
                 ]);
 
                 // Delete existing masuk detail records
@@ -183,57 +186,74 @@ class KeluarForm extends Component
 
             } else {
 
-                $code = unic(10).date('Ymd');
+                if (! empty($this->scanned_items)) {
+                    $code = unic(10) . date('Ymd');
 
-                // Create new record
-                $newKeluar = Keluar::create([
-                    'keluar_code' => $code,
-                    'keluar_tanggal' => $this->keluar_tanggal,
-                    'keluar_nama' => $this->keluar_nama,
-                    'keluar_id_departemen' => $this->keluar_id_departemen,
-                    'keluar_catatan' => $this->keluar_catatan,
-                ]);
+                    // Create new record
+                    $newKeluar = Keluar::create([
+                        'keluar_code'          => $code,
+                        'keluar_tanggal'       => $this->keluar_tanggal,
+                        'keluar_nama'          => $this->keluar_nama,
+                        'keluar_id_departemen' => $this->keluar_id_departemen,
+                        'keluar_catatan'       => $this->keluar_catatan,
+                    ]);
 
-                // Get the keluar_code for the newly created record
-                $keluarCode = $newKeluar->keluar_code;
-            }
+                    // Get the keluar_code for the newly created record
 
-            $this->keluar_code = $keluarCode;
+                    if (! empty($code)) {
+                        // Create masuk detail records using the correct keluar_code
+                        foreach ($this->scanned_items as $item) {
+                            KeluarDetail::create([
+                                'keluar_detail_code_keluar' => $code,
+                                'keluar_detail_code_barang' => $item['barang_code'],
+                                'keluar_detail_qty'         => $item['qty'],
+                            ]);
 
-            // Create masuk detail records using the correct keluar_code
-            foreach ($this->scanned_items as $item) {
-                KeluarDetail::create([
-                    'keluar_detail_code_keluar' => $keluarCode,
-                    'keluar_detail_code_barang' => $item['barang_code'],
-                    'keluar_detail_qty' => $item['qty']
-                ]);
+                            $barang     = Barang::where('barang_code', $item['barang_code'])->first();
+                            $qty_barang = $barang->barang_qty;
 
-                $barang = Barang::where('barang_code', $item['barang_code'])->first();
-                $qty_barang = $barang->barang_qty;
+                            if ($qty_barang < $item['qty']) {
+                                // Handle insufficient stock
+                                session()->flash('error', 'Stock ' . $barang->barang_nama . ' tersisa : ' . $qty_barang);
+                                DB::rollback();
+                                return;
+                            }
 
-                if($qty_barang < $item['qty'])
-                {
-                    // Handle insufficient stock
-                    session()->flash('error', 'Stock '.$barang->barang_nama.' tersisa : ' . $qty_barang );
-                    DB::rollback();
+                            $total = $qty_barang - $item['qty'];
+                            Barang::where('barang_code', $item['barang_code'])->update([
+                                'barang_qty' => $total,
+                            ]);
+                        }
+
+                    }
+
+                    session()->flash('message', 'Data saved successfully.');
+
+                    $this->resetform();
+
+                } else {
+                    session()->flash('error', 'No items scanned. Please add items before saving.');
                     return;
                 }
-
-                $total = $qty_barang - $item['qty'];
-                Barang::where('barang_code', $item['barang_code'])->update([
-                    'barang_qty' => $total
-                ]);
             }
 
             DB::commit();
-
-            session()->flash('message', 'Data saved successfully.');
-            // Redirect to the table view which seems to be the list page
+                                       // Redirect to the table view which seems to be the list page
             return redirect()->back(); // Use the table route as the list page
 
         } catch (\Exception $e) {
             DB::rollback();
             session()->flash('error', 'Error saving data: ' . $e->getMessage());
         }
+    }
+
+    public function resetform()
+    {
+        $this->keluar_code          = null;
+        $this->keluar_tanggal       = date('Y-m-d');
+        $this->keluar_nama          = null;
+        $this->keluar_id_departemen = null;
+        $this->keluar_catatan       = null;
+        $this->scanned_items        = [];
     }
 }

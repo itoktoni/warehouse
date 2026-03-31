@@ -124,6 +124,7 @@ class MasukForm extends Component
                 $masuk = MasukDetail::where('masuk_detail_code_masuk', $detail->masuk_detail_code_masuk)->count();
                 if ($masuk == 0) {
                    Masuk::where('masuk_code', $detail->masuk_detail_code_masuk)->delete();
+                   return $this->redirectRoute('transaksi_masuk.getTable');
                 }
             }
         }
@@ -164,55 +165,86 @@ class MasukForm extends Component
                 ]);
 
                 // Delete existing masuk detail records
-                MasukDetail::where('masuk_detail_code_masuk', $this->model->masuk_code)->delete();
+                // MasukDetail::where('masuk_detail_code_masuk', $this->model->masuk_code)->delete();
 
                 // Get the masuk_code for the existing record
                 $masukCode = $this->model->masuk_code;
             } else {
 
-                $code = unic(10).date('Ymd');
+                if(!empty($this->scanned_items))
+                {
+                    $code = unic(10).date('Ymd');
 
-                // Create new record
-                $newMasuk = Masuk::create([
-                    'masuk_code' => $code,
-                    'masuk_tanggal' => $this->masuk_tanggal,
-                    'masuk_id_supplier' => $this->masuk_id_supplier,
-                    'masuk_no_po' => $this->masuk_no_po,
-                    'masuk_tanggal_pengiriman' => $this->masuk_tanggal_pengiriman,
-                    'masuk_no_pengiriman' => $this->masuk_no_pengiriman,
-                    'masuk_catatan' => $this->masuk_catatan,
-                ]);
+                    // Create new record
+                    $newMasuk = Masuk::create([
+                        'masuk_code' => $code,
+                        'masuk_tanggal' => $this->masuk_tanggal,
+                        'masuk_id_supplier' => $this->masuk_id_supplier,
+                        'masuk_no_po' => $this->masuk_no_po,
+                        'masuk_tanggal_pengiriman' => $this->masuk_tanggal_pengiriman,
+                        'masuk_no_pengiriman' => $this->masuk_no_pengiriman,
+                        'masuk_catatan' => $this->masuk_catatan,
+                    ]);
+
+                    $masukCode = $newMasuk->masuk_code;
+
+                    session()->flash('message', 'Data saved successfully.');
+
+                    if(empty($this->masuk_code))
+                    {
+                        foreach ($this->scanned_items as $item) {
+                            MasukDetail::create([
+                                'masuk_detail_code_masuk' => $masukCode,
+                                'masuk_detail_code_barang' => $item['barang_code'],
+                                'masuk_detail_qty' => $item['qty']
+                            ]);
+
+                            $barang = Barang::where('barang_code', $item['barang_code'])->first();
+                            $qty_barang = $barang->barang_qty;
+
+                            $total = $qty_barang + $item['qty'];
+                            Barang::where('barang_code', $item['barang_code'])->update([
+                                'barang_qty' => $total
+                            ]);
+                        }
+                    }
+
+                    $this->resetform();
+
+                }
+                else
+                {
+                    session()->flash('error', 'No items scanned. Please add items before saving.');
+                    return;
+                }
 
                 // Get the masuk_code for the newly created record
-                $masukCode = $newMasuk->masuk_code;
             }
 
             // Create masuk detail records using the correct masuk_code
-            foreach ($this->scanned_items as $item) {
-                MasukDetail::create([
-                    'masuk_detail_code_masuk' => $masukCode,
-                    'masuk_detail_code_barang' => $item['barang_code'],
-                    'masuk_detail_qty' => $item['qty']
-                ]);
-
-                $barang = Barang::where('barang_code', $item['barang_code'])->first();
-                $qty_barang = $barang->barang_qty;
-
-                $total = $qty_barang + $item['qty'];
-                Barang::where('barang_code', $item['barang_code'])->update([
-                    'barang_qty' => $total
-                ]);
-            }
 
             DB::commit();
 
-            session()->flash('message', 'Data saved successfully.');
             // Redirect to the table view which seems to be the list page
+
             return redirect()->back(); // Use the table route as the list page
+
 
         } catch (\Exception $e) {
             DB::rollback();
             session()->flash('error', 'Error saving data: ' . $e->getMessage());
         }
+    }
+
+    public function resetform()
+    {
+        $this->masuk_code = null;
+        $this->masuk_tanggal = date('Y-m-d');
+        $this->masuk_id_supplier = null;
+        $this->masuk_no_po = null;
+        $this->masuk_tanggal_pengiriman = null;
+        $this->masuk_no_pengiriman = null;
+        $this->masuk_catatan = null;
+        $this->scanned_items = [];
     }
 }

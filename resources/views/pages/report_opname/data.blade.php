@@ -44,8 +44,8 @@
 				<td>{{ $table->odetail_code_barang }}</td>
 				<td>{{ $table->odetail_nama_barang }}</td>
 				<td>{{ $table->odetail_register }}</td>
-				<td>{{ $table->odetail_opname }}</td>
-				<td>{{ $table->odetail_register - $table->odetail_opname }}</td>
+				<td>{{ $table->odetail_ketemu }}</td>
+				<td>{{ $table->odetail_ketemu - $table->odetail_register }}</td>
 			</tr>
 			@empty
 			@endforelse

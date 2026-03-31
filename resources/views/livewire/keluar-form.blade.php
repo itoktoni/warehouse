@@ -54,8 +54,7 @@
                     <textarea class="form-control" id="keluar_catatan" wire:model="keluar_catatan" rows="3"></textarea>
                 </div>
             </div>
-
-            @if (empty($keluar_code))
+            @if (!$form)
                 <!-- Barcode Scanner Input -->
                 <div class="row mt-3">
                     <div class="col-md-6">

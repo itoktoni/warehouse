@@ -23,6 +23,7 @@
                                     </th>
                                     <th class="text-center column-action">{{ __('Action') }}</th>
                                     <th style="width: 100px;text-align: center;">Barcode</th>
+                                    <th>Kategori</th>
                                     <th>Code</th>
                                     <th>Nama</th>
                                 </tr>
@@ -41,6 +42,7 @@
                                         </td>
 
 										<td data-label="Barcode" class="text-center">{!! QrCode::size(50)->generate($table->field_primary) !!}</td>
+										<td data-label="Code">{{ $table->category_name }}</td>
 										<td data-label="Code">{{ $table->barang_code }}</td>
 										<td data-label="Nama">{{ $table->barang_nama }}</td>
 
