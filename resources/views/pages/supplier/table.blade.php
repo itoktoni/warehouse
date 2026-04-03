@@ -6,7 +6,21 @@
 
             <x-form method="GET" x-init="" x-target="table" role="search" aria-label="Contacts"
                 autocomplete="off" action="{{ moduleRoute('getTable') }}">
+
+                <div class="container-fluid filter-container mb-2">
+                    <div class="row">
+
+                        <x-form-input type="text" col="3" label="Nama Suplier" name="supplier_nama" />
+                        <x-form-input type="text" col="3" label="PIC" name="supplier_pic" />
+                        <x-form-input type="text" col="3" label="Telp" name="supplier_telp" />
+                        <x-form-input type="text" col="3" label="Email" name="supplier_email" />
+
+                    </div>
+                </div>
+
                 <x-filter toggle="Filter" :fields="$fields" />
+
+
             </x-form>
 
             <x-form method="POST" action="{{ moduleRoute('getTable') }}">

@@ -23,6 +23,13 @@ class Departemen extends SystemModel
     protected $table = 'departemen';
     protected $primaryKey = 'departemen_id';
 
+    protected $filters = [
+        'filter',
+        'departemen_nama',
+        'departemen_pic',
+        'departemen_telp',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -43,5 +50,35 @@ class Departemen extends SystemModel
     public function getFieldNameAttribute()
     {
         return $this->{$this->field_name()};
+    }
+
+    public function department_nama($query)
+    {
+        $name = request()->get('department_nama');
+        if ($name) {
+            $query = $query->where('department_nama', 'like', "%$name%");
+        }
+
+        return $query;
+    }
+
+    public function department_pic($query)
+    {
+        $pic = request()->get('department_pic');
+        if ($pic) {
+            $query = $query->where('department_pic', 'like', "%$pic%");
+        }
+
+        return $query;
+    }
+
+    public function department_telp($query)
+    {
+        $telp = request()->get('department_telp');
+        if ($telp) {
+            $query = $query->where('department_telp', 'like', "%$telp%");
+        }
+
+        return $query;
     }
 }

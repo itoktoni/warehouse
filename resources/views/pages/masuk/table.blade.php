@@ -14,6 +14,10 @@
                         <x-form-input type="date" col="3" label="End Date" name="end_date" />
                         <x-form-select col="6" name="masuk_id_supplier" label="Supplier" :options="$supplier" />
 
+                        <x-form-input type="text" col="4" label="Code" name="code" />
+                        <x-form-input type="text" col="4" label="No. PO" name="masuk_no_po" />
+                        <x-form-input type="text" col="4" label="No Pengiriman" name="masuk_no_pengiriman" />
+
                     </div>
                 </div>
 

@@ -46,6 +46,9 @@ class Masuk extends SystemModel
         'masuk_id_supplier',
         'start_date',
         'end_date',
+        'code',
+        'masuk_no_po',
+        'masuk_no_pengiriman',
     ];
 
     const CREATED_AT = 'masuk_created_at';
@@ -114,5 +117,36 @@ class Masuk extends SystemModel
             }
         });
         parent::boot();
+    }
+
+    public function code($query)
+    {
+        $filter = request()->get('code');
+        if ($filter) {
+            $query = $query->where('masuk_code', 'like', "%$filter%");
+        }
+
+        return $query;
+    }
+
+
+    public function masuk_no_po($query)
+    {
+        $filter = request()->get('masuk_no_po');
+        if ($filter) {
+            $query = $query->where('masuk_no_po', 'like', "%$filter%");
+        }
+
+        return $query;
+    }
+
+    public function masuk_no_pengiriman($query)
+    {
+        $filter = request()->get('masuk_no_pengiriman');
+        if ($filter) {
+            $query = $query->where('masuk_no_pengiriman', 'like', "%$filter%");
+        }
+
+        return $query;
     }
 }

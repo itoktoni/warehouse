@@ -36,6 +36,14 @@ class Supplier extends SystemModel
         return 'supplier_nama';
     }
 
+    protected $filters = [
+        'filter',
+        'supplier_nama',
+        'supplier_pic',
+        'supplier_telp',
+        'supplier_email',
+    ];
+
     public function fieldSearching()
     {
         return self::field_name();
@@ -44,5 +52,45 @@ class Supplier extends SystemModel
     public function getFieldNameAttribute()
     {
         return $this->{$this->field_name()};
+    }
+
+    public function supplier_nama($query)
+    {
+        $name = request()->get('supplier_nama');
+        if ($name) {
+            $query = $query->where('supplier_nama', 'like', "%$name%");
+        }
+
+        return $query;
+    }
+
+    public function supplier_pic($query)
+    {
+        $pic = request()->get('supplier_pic');
+        if ($pic) {
+            $query = $query->where('supplier_pic', 'like', "%$pic%");
+        }
+
+        return $query;
+    }
+
+    public function supplier_telp($query)
+    {
+        $telp = request()->get('supplier_telp');
+        if ($telp) {
+            $query = $query->where('supplier_telp', 'like', "%$telp%");
+        }
+
+        return $query;
+    }
+
+    public function supplier_email($query)
+    {
+        $email = request()->get('supplier_email');
+        if ($email) {
+            $query = $query->where('supplier_email', 'like', "%$email%");
+        }
+
+        return $query;
     }
 }
