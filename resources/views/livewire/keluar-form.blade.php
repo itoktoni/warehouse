@@ -21,7 +21,7 @@
                 @endif
 
                 <div class="col-md-3 mb-3">
-                    <label for="keluar_tanggal" class="form-label">Tanggal</label>
+                    <label for="keluar_tanggal" class="form-label">Tanggal Transaksi</label>
                     <input type="date" class="form-control" id="keluar_tanggal" wire:model="keluar_tanggal">
                     @error('keluar_tanggal')
                         <div class="text-danger">{{ $message }}</div>

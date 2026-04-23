@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label for="masuk_tanggal" class="form-label">Tanggal</label>
+                    <label for="masuk_tanggal" class="form-label">Tanggal Transaksi</label>
                     <input type="date"
                            class="form-control"
                            id="masuk_tanggal"
