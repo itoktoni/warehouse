@@ -46,6 +46,13 @@
 			@empty
 			@endforelse
 
+			<tr>
+				<td colspan="3" class="text-right">
+					<b>Total</b>
+				</td>
+				<td>{{ $data->sum('barang_qty') }}</td>
+			</tr>
+
 		</tbody>
 	</table>
 </div>
