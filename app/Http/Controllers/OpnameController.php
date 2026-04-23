@@ -38,6 +38,14 @@ class OpnameController extends MasterController
 
     public function postCreate(OpnameRequest $request, CreateService $service)
     {
+
+        $count = Opname::query()->where('opname_status', OpnameType::DIBUAT)->count();
+        if($count > 0)
+        {
+            Alert::error("Masih ada opname yang berlangsung, silahkan selesaikan terlebih dahulu !");
+            return Response::redirectBack();
+        }
+
         $data = $service->save($this->model, $request);
         $id = DB::getPdo()->lastInsertId();
 
