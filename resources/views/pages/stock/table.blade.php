@@ -37,7 +37,7 @@
                                     <tr>
 										<td data-label="Code">{{ $table->barang_code }}</td>
 										<td data-label="Nama">{{ $table->barang_nama }}</td>
-										<td data-label="Qty">{{ $table->barang_qty }}</td>
+										<td data-label="Qty">{{ $table->barang_qty ?? 0 }}</td>
                                     </tr>
                                 @empty
                                 @endforelse
