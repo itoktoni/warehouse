@@ -41,7 +41,7 @@
 				<td>{{ $loop->iteration }}</td>
 				<td>{{ $table->field_primary }}</td>
 				<td>{{ $table->field_name }}</td>
-				<td>{{ $table->barang_qty }}</td>
+				<td>{{ $table->barang_qty ?? 0 }}</td>
 			</tr>
 			@empty
 			@endforelse
