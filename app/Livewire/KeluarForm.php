@@ -130,6 +130,8 @@ class KeluarForm extends Component
 
                 $detail->delete();
 
+                session()->flash('message', 'Data deleted successfully.');
+
                 $masuk = KeluarDetail::where('keluar_detail_code_keluar', $detail->keluar_detail_code_keluar)->count();
                 if ($masuk == 0) {
                     Keluar::where('keluar_code', $detail->keluar_detail_code_keluar)->delete();

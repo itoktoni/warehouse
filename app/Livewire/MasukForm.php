@@ -121,6 +121,8 @@ class MasukForm extends Component
 
                 $detail->delete();
 
+                session()->flash('message', 'Data deleted successfully.');
+
                 $masuk = MasukDetail::where('masuk_detail_code_masuk', $detail->masuk_detail_code_masuk)->count();
                 if ($masuk == 0) {
                    Masuk::where('masuk_code', $detail->masuk_detail_code_masuk)->delete();
