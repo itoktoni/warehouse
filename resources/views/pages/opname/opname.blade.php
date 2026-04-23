@@ -37,7 +37,7 @@
 
                                     <td class="text-center" data-label="Kotor">
                                         <input type="hidden" name="qty[{{ $item->odetail_id ?? null }}][register]"
-                                            value="{{ $item->odetail_register ?? null }}" />
+                                            value="{{ $item->odetail_register ?? 0 }}" />
 
                                         {{ $item->odetail_register }}
                                     </td>
