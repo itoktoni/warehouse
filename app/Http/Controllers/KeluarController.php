@@ -25,6 +25,7 @@ class KeluarController extends MasterController
     {
         $query = $this->model->select(Keluar::getTableName().'.*', Departemen::field_name())
             ->leftJoinRelationship('has_departemen')
+            ->orderBy('keluar_created_at', 'DESC')
             ->filter();
 
         $page = env('PAGINATION_NUMBER', 10);
