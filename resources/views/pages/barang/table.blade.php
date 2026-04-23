@@ -12,7 +12,7 @@
 
                         <x-form-select col="4" name="barang_id_category" label="Kategori" :options="$category" />
                         <x-form-input type="text" col="4" label="Code" name="code" />
-                        <x-form-input type="text" col="4" label="Nama" name="barang_nama" />
+                        <x-form-input type="text" col="4" label="Nama" name="nama" />
 
                     </div>
                 </div>

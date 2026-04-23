@@ -30,6 +30,7 @@ class Barang extends SystemModel
         'code',
         'barang_code',
         'barang_nama',
+        'nama',
         'barang_id_category',
     ];
 
@@ -70,9 +71,9 @@ class Barang extends SystemModel
         return $this->hasOne(Category::getModel(), Category::field_primary(), 'barang_id_category');
     }
 
-    public function barang_nama($query)
+    public function nama($query)
     {
-        $filter = request()->get('barang_nama');
+        $filter = request()->get('nama');
         if ($filter) {
             $query = $query->where('barang_nama', 'like', "%$filter%");
         }
