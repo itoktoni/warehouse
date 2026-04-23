@@ -45,7 +45,11 @@
                                                 value="{{ $table->field_primary }}">
                                         </td>
                                         <td data-label="Action" class="col-md-2 text-center column-action">
-                                            <x-crud :model="$table">
+                                            <x-crud :model="$table" :action="['blank']">
+                                                @if ($table->opname_status != OpnameType::SELESAI)
+                                                <x-button module="getUpdate" key="{{ $table->field_primary }}" color="primary" icon="pencil-square" />
+                                                <x-button module="getDelete" key="{{ $table->field_primary }}" color="danger" icon="trash3" onclick="return confirm('Apakah anda yakin ingin menghapus ?')" class="button-delete" />
+                                                @endif
                                                 <x-button module="getOpname" key="{{ $table->field_primary }}" color="success" label="Opname" />
                                             </x-crud>
                                         </td>

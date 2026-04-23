@@ -1,7 +1,10 @@
 <x-layout>
     <x-form :model="$model" action="{{ moduleRoute('postOpname', $model->opname_id) }}" method="POST">
         <x-card label="Opname">
-            <x-action form="form" >
+            <x-action form="empty">
+                @if($model->opname_status != OpnameType::SELESAI)
+                <x-button type="submit" label="Simpan" />
+                @endif
                 <x-button module="getPrint" label="Print" key="{{ $model->field_primary }}" color="success"/>
             </x-action>
 

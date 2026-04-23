@@ -50,6 +50,16 @@
 			@empty
 			@endforelse
 
+			<tr>
+				<td colspan="3" class="text-right">
+					<b>Total</b>
+				</td>
+				<td>{{ $data->sum('odetail_register') }}</td>
+				<td>{{ $data->sum('odetail_ketemu') }}</td>
+				<td>{{ $data->sum('odetail_ketemu') - $data->sum('odetail_register') }}</td>
+			</tr>
+
+
 		</tbody>
 	</table>
 </div>
