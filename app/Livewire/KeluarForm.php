@@ -181,7 +181,7 @@ class KeluarForm extends Component
                 ]);
 
                 // Delete existing masuk detail records
-                KeluarDetail::where('keluar_detail_code_keluar', $this->model->keluar_code)->delete();
+                // KeluarDetail::where('keluar_detail_code_keluar', $this->model->keluar_code)->delete();
 
                 // Get the keluar_code for the existing record
                 $keluarCode = $this->model->keluar_code;
