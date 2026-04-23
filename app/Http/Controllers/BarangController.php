@@ -25,6 +25,7 @@ class BarangController extends MasterController
     {
         $query = Barang::select(Barang::getTableName().'.*', Category::field_name())
             ->leftJoinRelationship('has_category')
+            ->orderBy('barang_created_at', 'DESC')
             ->filter();
 
         $page = env('PAGINATION_NUMBER', 10);

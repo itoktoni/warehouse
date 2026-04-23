@@ -39,7 +39,7 @@ class Barang extends SystemModel
      *
      * @var array<int, string>
      */
-    protected $fillable = ['barang_code', 'barang_nama', 'barang_id_category', 'barang_qty'];
+    protected $fillable = ['barang_code', 'barang_nama', 'barang_id_category', 'barang_qty', 'barang_created_at'];
 
     public static function field_name()
     {
@@ -61,6 +61,7 @@ class Barang extends SystemModel
         parent::creating(function ($model) {
             if (empty($model->{Barang::field_primary()})) {
                 $model->{Barang::field_primary()} = unic(5).date('Ymd');
+                $model->{'barang_created_at'} = date('Y-m-d H:i:s');
             }
         });
         parent::boot();
