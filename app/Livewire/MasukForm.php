@@ -188,8 +188,6 @@ class MasukForm extends Component
 
                     $masukCode = $newMasuk->masuk_code;
 
-                    session()->flash('message', 'Data saved successfully.');
-
                     if(empty($this->masuk_code))
                     {
                         foreach ($this->scanned_items as $item) {
@@ -222,6 +220,8 @@ class MasukForm extends Component
             }
 
             // Create masuk detail records using the correct masuk_code
+
+            session()->flash('message', 'Data saved successfully.');
 
             DB::commit();
 
