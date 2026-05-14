@@ -18,7 +18,7 @@ use App\Dao\Models\Core\SystemModel;
 
 class Barang extends SystemModel
 {
-    protected $perPage = 20;
+    protected $perPage = 10;
     protected $table = 'barang';
     protected $primaryKey = 'barang_code';
 

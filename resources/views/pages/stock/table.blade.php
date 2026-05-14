@@ -11,7 +11,7 @@
                     <div class="row">
 
                         <x-form-input col="6" label="Kode Barang" name="barang_code" />
-                        <x-form-select col="6" name="barang_code" label="Nama Barang" :options="$barang" />
+                        <x-form-select col="6" class="search" name="barang_code" label="Nama Barang" :options="$barang" />
                     </div>
                 </div>
 
@@ -20,21 +20,29 @@
 
             <x-form method="POST" action="{{ moduleRoute('getTable') }}">
 
-                <x-action />
+                <x-action :form="'empty'" >
+                     <a href="{{ url()->full() }}&?available=1" class="btn btn-primary" onclick="return confirm('Apakah anda yakin ingin menghapus ?')"/>
+                        Filter Available Stock
+                     <a/>
+                </x-action>
 
                 <div class="container-fluid" id="table">
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                       <th>Code</th>
-                                       <th>Nama</th>
-                                       <th>Qty</th>
+                                    <th class="text-center column-action">{{ __('Action') }}</th>
+                                    <th>Code</th>
+                                    <th>Nama</th>
+                                    <th>Qty</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($data as $table)
                                     <tr>
+                                         <td data-label="Action" class="col-md-2 text-center column-action">
+                                            <x-button module="getUpdate" key="{{ $table->field_primary }}" color="danger" label="Adjust" />
+                                        </td>
 										<td data-label="Code">{{ $table->barang_code }}</td>
 										<td data-label="Nama">{{ $table->barang_nama }}</td>
 										<td data-label="Qty">{{ $table->barang_qty ?? 0 }}</td>

@@ -6,8 +6,8 @@
             <div class="row">
                 @bind($model)
 
-                <x-form-select col="4" name="barang_id_category" :options="$category"/>
-                <x-form-input col="5" name="barang_nama" />
+                <x-form-input col="5" readonly name="barang_nama" />
+                <x-form-input col="5" value="{{ $model->barang_qty ?? 0 }}" name="barang_qty" />
 
                  <div class="col-md-2">
 

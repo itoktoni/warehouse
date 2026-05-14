@@ -29,11 +29,6 @@ class KeluarController extends MasterController
             ->filter();
 
         $page = env('PAGINATION_NUMBER', 10);
-        if(request()->get('page'))
-        {
-            $page = request()->get('page');
-        }
-
         $query = env('PAGINATION_SIMPLE') ? $query->simplePaginate($page) : $query->fastPaginate($page);
 
 

@@ -65,14 +65,10 @@ class OpnameController extends MasterController
     {
         $query = Opname::query()
             ->addSelect([$this->model->getTable().'.*'])
+            ->orderBy('opname_created_at', 'DESC')
             ->filter();
 
         $per_page = env('PAGINATION_NUMBER', 10);
-        if(request()->get('per_page'))
-        {
-            $per_page = request()->get('per_page');
-        }
-
         $query = env('PAGINATION_SIMPLE') ? $query->simplePaginate($per_page) : $query->fastPaginate($per_page);
 
         return $query;
@@ -119,7 +115,9 @@ class OpnameController extends MasterController
     public function getOpname($code)
     {
         $model = Opname::find($code);
-        $detail = OpnameDetail::where('odetail_id_opname', $model->field_primary)->get();
+        $detail = OpnameDetail::where('odetail_id_opname', $model->field_primary)
+            ->orderBy('odetail_nama_barang', 'ASC')
+            ->get();
 
         return $this->views($this->template(), $this->share([
             'model' => $model,
