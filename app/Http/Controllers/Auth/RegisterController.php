@@ -64,7 +64,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        if (env('APP_AUTH', false)) {
+        if (env('APP_AUTH', false) && env('APP_REGISTER', false)) {
             return UserModel::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -72,6 +72,7 @@ class RegisterController extends Controller
             ]);
         }
 
+        return abort(403);
     }
 
     public function redirectTo()
