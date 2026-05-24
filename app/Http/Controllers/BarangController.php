@@ -23,13 +23,18 @@ class BarangController extends MasterController
 
     public function getData()
     {
-        $query = Barang::select(Barang::getTableName().'.*', Category::field_name())
-            ->leftJoinRelationship('has_category')
-            ->orderBy('barang_created_at', 'DESC')
+        $query = Barang::select(
+            Barang::getTableName() . ".*",
+            Category::field_name(),
+        )
+            ->leftJoinRelationship("has_category")
+            ->orderBy("barang_created_at", "DESC")
             ->filter();
 
-        $page = env('PAGINATION_NUMBER', 10);
-        $query = env('PAGINATION_SIMPLE') ? $query->simplePaginate($page) : $query->fastPaginate($page);
+        $page = env("PAGINATION_NUMBER", 10);
+        $query = env("PAGINATION_SIMPLE")
+            ? $query->simplePaginate($page)
+            : $query->fastPaginate($page);
 
         return $query;
     }
@@ -39,8 +44,8 @@ class BarangController extends MasterController
         $category = Category::getOptions();
 
         $view = [
-            'category' => $category,
-            'model' => $this->model,
+            "category" => $category,
+            "model" => $this->model,
         ];
 
         return self::$share = array_merge($view, self::$share, $data);
@@ -49,28 +54,35 @@ class BarangController extends MasterController
     public function getPrint($code)
     {
         $model = Barang::find($code);
-        $qrcode = base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($model->field_primary));
+        $qrcode = base64_encode(
+            QrCode::format("svg")
+                ->size(100)
+                ->errorCorrection("H")
+                ->generate($model->field_primary),
+        );
 
         $pdf = Pdf::loadView($this->template(), [
-            'model' => $model,
-            'qrcode' => $qrcode,
-            'print' => true,
+            "model" => $model,
+            "qrcode" => $qrcode,
+            "print" => true,
         ]);
 
-        $pdf->setPaper([0, 0, 160, 120], 'potrait');
-
+        $pdf->setPaper([0, 0, 160, 120], "potrait");
 
         // You can stream the PDF to the browser or download it
         // return $pdf->stream('invoice.pdf');
-        return $pdf->stream(unic(10).'.pdf')->withHeaders([
-            'Content-Type' => 'application/pdf',
-            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
-            'Pragma' => 'no-cache',
+        return $pdf->stream(unic(10) . ".pdf")->withHeaders([
+            "Content-Type" => "application/pdf",
+            "Cache-Control" => "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma" => "no-cache",
         ]);
 
-        return $this->views($this->template(), $this->share([
-            'model' => $model,
-            'print' => true,
-        ]));
+        return $this->views(
+            $this->template(),
+            $this->share([
+                "model" => $model,
+                "print" => true,
+            ]),
+        );
     }
 }
